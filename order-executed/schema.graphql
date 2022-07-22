@@ -1,0 +1,12 @@
+type OrderExecutedEntity @entity {
+  id: ID!
+  recipient: Bytes!
+  symbol: String!
+  qty: BigInt!
+  filledQty: BigInt!
+  filledAvgPrice: BigInt!
+  side: String!
+  filledAt: BigInt!
+  commission: BigInt!
+  aUsdBalance: BigInt!
+}
