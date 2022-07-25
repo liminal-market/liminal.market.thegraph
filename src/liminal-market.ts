@@ -7,7 +7,7 @@ import {
 import { OrderExecutedEntity } from "../generated/schema"
 
 export function handleOrderExecuted(event: OrderExecuted): void {
-  let entity = new OrderExecutedEntity(event.transaction.from.toHex())
+  let entity = new OrderExecutedEntity(event.transaction.hash.toHex())
 
   entity.recipient =  event.params.recipient;
   entity.symbol = event.params.symbol;
