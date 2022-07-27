@@ -4,7 +4,7 @@
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ liminal-market/order-executed",
+    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ liminal-market/liminal-market",
     "create-local": "graph create --node http://localhost:8020/ liminal-market/order-executed",
     "remove-local": "graph remove --node http://localhost:8020/ liminal-market/order-executed",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 liminal-market/order-executed",
