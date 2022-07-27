@@ -14,11 +14,36 @@ dataSources:
       apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
-        - OrderExecuted
+        - Order
+        - OrderFailed
       abis:
         - name: LiminalMarket
           file: LiminalMarket\abis\LiminalMarket.json
       eventHandlers:
         - event: OrderExecuted(address,string,uint256,uint256,uint256,string,uint256,uint256,uint256)
           handler: handleOrderExecuted
+        - event: OrderFailed(address,string,uint256,uint256,string)
+          handler: handleOrderFailed
+        - event: TokenCreated(address,string)
+          handler: handleTokenCreated
       file: LiminalMarket\LiminalMarket.wasm
+  - kind: ethereum
+    name: aUSD
+    network: mumbai
+    source:
+      address: "0xe65Fb29C8CeB720755D456233c971DDb11fcbb8d"
+      abi: aUSD
+      startBlock: 26585148
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Order
+      abis:
+        - name: aUSD
+          file: aUSD\abis\aUSD.json
+      eventHandlers:
+        - event: BalanceSet(address,uint256)
+          handler: handleBalanceSet
+      file: aUSD\aUSD.wasm

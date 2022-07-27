@@ -11,7 +11,7 @@ import {
   BigDecimal
 } from "@graphprotocol/graph-ts";
 
-export class OrderExecutedEntity extends Entity {
+export class LiminalMarketInfo extends Entity {
   constructor(id: string) {
     super();
     this.set("id", Value.fromString(id));
@@ -19,20 +19,124 @@ export class OrderExecutedEntity extends Entity {
 
   save(): void {
     let id = this.get("id");
-    assert(id != null, "Cannot save OrderExecutedEntity entity without an ID");
+    assert(id != null, "Cannot save LiminalMarketInfo entity without an ID");
     if (id) {
       assert(
         id.kind == ValueKind.STRING,
-        `Entities of type OrderExecutedEntity must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+        `Entities of type LiminalMarketInfo must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
       );
-      store.set("OrderExecutedEntity", id.toString(), this);
+      store.set("LiminalMarketInfo", id.toString(), this);
     }
   }
 
-  static load(id: string): OrderExecutedEntity | null {
-    return changetype<OrderExecutedEntity | null>(
-      store.get("OrderExecutedEntity", id)
+  static load(id: string): LiminalMarketInfo | null {
+    return changetype<LiminalMarketInfo | null>(
+      store.get("LiminalMarketInfo", id)
     );
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get txCount(): BigInt {
+    let value = this.get("txCount");
+    return value!.toBigInt();
+  }
+
+  set txCount(value: BigInt) {
+    this.set("txCount", Value.fromBigInt(value));
+  }
+
+  get userCount(): i32 {
+    let value = this.get("userCount");
+    return value!.toI32();
+  }
+
+  set userCount(value: i32) {
+    this.set("userCount", Value.fromI32(value));
+  }
+
+  get symbolCount(): i32 {
+    let value = this.get("symbolCount");
+    return value!.toI32();
+  }
+
+  set symbolCount(value: i32) {
+    this.set("symbolCount", Value.fromI32(value));
+  }
+
+  get tvlAUSDWei(): BigInt {
+    let value = this.get("tvlAUSDWei");
+    return value!.toBigInt();
+  }
+
+  set tvlAUSDWei(value: BigInt) {
+    this.set("tvlAUSDWei", Value.fromBigInt(value));
+  }
+
+  get tvlAUSD(): BigDecimal {
+    let value = this.get("tvlAUSD");
+    return value!.toBigDecimal();
+  }
+
+  set tvlAUSD(value: BigDecimal) {
+    this.set("tvlAUSD", Value.fromBigDecimal(value));
+  }
+
+  get tvlSymbolUSDWei(): BigInt {
+    let value = this.get("tvlSymbolUSDWei");
+    return value!.toBigInt();
+  }
+
+  set tvlSymbolUSDWei(value: BigInt) {
+    this.set("tvlSymbolUSDWei", Value.fromBigInt(value));
+  }
+
+  get tvlSymbolUSD(): BigDecimal {
+    let value = this.get("tvlSymbolUSD");
+    return value!.toBigDecimal();
+  }
+
+  set tvlSymbolUSD(value: BigDecimal) {
+    this.set("tvlSymbolUSD", Value.fromBigDecimal(value));
+  }
+
+  get lastOrderAt(): BigInt {
+    let value = this.get("lastOrderAt");
+    return value!.toBigInt();
+  }
+
+  set lastOrderAt(value: BigInt) {
+    this.set("lastOrderAt", Value.fromBigInt(value));
+  }
+}
+
+export class Order extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save Order entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type Order must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("Order", id.toString(), this);
+    }
+  }
+
+  static load(id: string): Order | null {
+    return changetype<Order | null>(store.get("Order", id));
   }
 
   get id(): string {
@@ -62,33 +166,6 @@ export class OrderExecutedEntity extends Entity {
     this.set("symbol", Value.fromString(value));
   }
 
-  get qty(): BigInt {
-    let value = this.get("qty");
-    return value!.toBigInt();
-  }
-
-  set qty(value: BigInt) {
-    this.set("qty", Value.fromBigInt(value));
-  }
-
-  get filledQty(): BigInt {
-    let value = this.get("filledQty");
-    return value!.toBigInt();
-  }
-
-  set filledQty(value: BigInt) {
-    this.set("filledQty", Value.fromBigInt(value));
-  }
-
-  get filledAvgPrice(): BigInt {
-    let value = this.get("filledAvgPrice");
-    return value!.toBigInt();
-  }
-
-  set filledAvgPrice(value: BigInt) {
-    this.set("filledAvgPrice", Value.fromBigInt(value));
-  }
-
   get side(): string {
     let value = this.get("side");
     return value!.toString();
@@ -96,6 +173,60 @@ export class OrderExecutedEntity extends Entity {
 
   set side(value: string) {
     this.set("side", Value.fromString(value));
+  }
+
+  get qtyWei(): BigInt {
+    let value = this.get("qtyWei");
+    return value!.toBigInt();
+  }
+
+  set qtyWei(value: BigInt) {
+    this.set("qtyWei", Value.fromBigInt(value));
+  }
+
+  get qty(): BigDecimal {
+    let value = this.get("qty");
+    return value!.toBigDecimal();
+  }
+
+  set qty(value: BigDecimal) {
+    this.set("qty", Value.fromBigDecimal(value));
+  }
+
+  get filledQtyWei(): BigInt {
+    let value = this.get("filledQtyWei");
+    return value!.toBigInt();
+  }
+
+  set filledQtyWei(value: BigInt) {
+    this.set("filledQtyWei", Value.fromBigInt(value));
+  }
+
+  get filledQty(): BigDecimal {
+    let value = this.get("filledQty");
+    return value!.toBigDecimal();
+  }
+
+  set filledQty(value: BigDecimal) {
+    this.set("filledQty", Value.fromBigDecimal(value));
+  }
+
+  get filledAvgPriceWei(): BigInt {
+    let value = this.get("filledAvgPriceWei");
+    return value!.toBigInt();
+  }
+
+  set filledAvgPriceWei(value: BigInt) {
+    this.set("filledAvgPriceWei", Value.fromBigInt(value));
+  }
+
+  get filledAvgPrice(): BigDecimal {
+    let value = this.get("filledAvgPrice");
+    return value!.toBigDecimal();
+  }
+
+  set filledAvgPrice(value: BigDecimal) {
+    this.set("filledAvgPrice", Value.fromBigDecimal(value));
   }
 
   get filledAt(): BigInt {
@@ -107,21 +238,988 @@ export class OrderExecutedEntity extends Entity {
     this.set("filledAt", Value.fromBigInt(value));
   }
 
-  get commission(): BigInt {
+  get commissionWei(): BigInt {
+    let value = this.get("commissionWei");
+    return value!.toBigInt();
+  }
+
+  set commissionWei(value: BigInt) {
+    this.set("commissionWei", Value.fromBigInt(value));
+  }
+
+  get commission(): BigDecimal {
     let value = this.get("commission");
+    return value!.toBigDecimal();
+  }
+
+  set commission(value: BigDecimal) {
+    this.set("commission", Value.fromBigDecimal(value));
+  }
+
+  get aUsdBalanceAfterOrderWei(): BigInt {
+    let value = this.get("aUsdBalanceAfterOrderWei");
     return value!.toBigInt();
   }
 
-  set commission(value: BigInt) {
-    this.set("commission", Value.fromBigInt(value));
+  set aUsdBalanceAfterOrderWei(value: BigInt) {
+    this.set("aUsdBalanceAfterOrderWei", Value.fromBigInt(value));
   }
 
-  get aUsdBalance(): BigInt {
-    let value = this.get("aUsdBalance");
+  get aUsdBalanceAfterOrder(): BigDecimal {
+    let value = this.get("aUsdBalanceAfterOrder");
+    return value!.toBigDecimal();
+  }
+
+  set aUsdBalanceAfterOrder(value: BigDecimal) {
+    this.set("aUsdBalanceAfterOrder", Value.fromBigDecimal(value));
+  }
+
+  get user(): string {
+    let value = this.get("user");
+    return value!.toString();
+  }
+
+  set user(value: string) {
+    this.set("user", Value.fromString(value));
+  }
+}
+
+export class OrderFail extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save OrderFail entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type OrderFail must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("OrderFail", id.toString(), this);
+    }
+  }
+
+  static load(id: string): OrderFail | null {
+    return changetype<OrderFail | null>(store.get("OrderFail", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get symbol(): string {
+    let value = this.get("symbol");
+    return value!.toString();
+  }
+
+  set symbol(value: string) {
+    this.set("symbol", Value.fromString(value));
+  }
+
+  get message(): string {
+    let value = this.get("message");
+    return value!.toString();
+  }
+
+  set message(value: string) {
+    this.set("message", Value.fromString(value));
+  }
+
+  get buyingPowerWei(): BigInt {
+    let value = this.get("buyingPowerWei");
     return value!.toBigInt();
   }
 
-  set aUsdBalance(value: BigInt) {
-    this.set("aUsdBalance", Value.fromBigInt(value));
+  set buyingPowerWei(value: BigInt) {
+    this.set("buyingPowerWei", Value.fromBigInt(value));
+  }
+
+  get buyingPower(): BigDecimal {
+    let value = this.get("buyingPower");
+    return value!.toBigDecimal();
+  }
+
+  set buyingPower(value: BigDecimal) {
+    this.set("buyingPower", Value.fromBigDecimal(value));
+  }
+
+  get costWei(): BigInt {
+    let value = this.get("costWei");
+    return value!.toBigInt();
+  }
+
+  set costWei(value: BigInt) {
+    this.set("costWei", Value.fromBigInt(value));
+  }
+
+  get cost(): BigDecimal {
+    let value = this.get("cost");
+    return value!.toBigDecimal();
+  }
+
+  set cost(value: BigDecimal) {
+    this.set("cost", Value.fromBigDecimal(value));
+  }
+}
+
+export class User extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save User entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type User must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("User", id.toString(), this);
+    }
+  }
+
+  static load(id: string): User | null {
+    return changetype<User | null>(store.get("User", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get currentAUsdBalanceWei(): BigInt {
+    let value = this.get("currentAUsdBalanceWei");
+    return value!.toBigInt();
+  }
+
+  set currentAUsdBalanceWei(value: BigInt) {
+    this.set("currentAUsdBalanceWei", Value.fromBigInt(value));
+  }
+
+  get currentAUsdBalance(): BigDecimal {
+    let value = this.get("currentAUsdBalance");
+    return value!.toBigDecimal();
+  }
+
+  set currentAUsdBalance(value: BigDecimal) {
+    this.set("currentAUsdBalance", Value.fromBigDecimal(value));
+  }
+
+  get orders(): Array<string> | null {
+    let value = this.get("orders");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toStringArray();
+    }
+  }
+
+  set orders(value: Array<string> | null) {
+    if (!value) {
+      this.unset("orders");
+    } else {
+      this.set("orders", Value.fromStringArray(<Array<string>>value));
+    }
+  }
+
+  get orderFails(): Array<string> | null {
+    let value = this.get("orderFails");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toStringArray();
+    }
+  }
+
+  set orderFails(value: Array<string> | null) {
+    if (!value) {
+      this.unset("orderFails");
+    } else {
+      this.set("orderFails", Value.fromStringArray(<Array<string>>value));
+    }
+  }
+
+  get positions(): Array<string> | null {
+    let value = this.get("positions");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toStringArray();
+    }
+  }
+
+  set positions(value: Array<string> | null) {
+    if (!value) {
+      this.unset("positions");
+    } else {
+      this.set("positions", Value.fromStringArray(<Array<string>>value));
+    }
+  }
+
+  get lastOrderAt(): BigInt {
+    let value = this.get("lastOrderAt");
+    return value!.toBigInt();
+  }
+
+  set lastOrderAt(value: BigInt) {
+    this.set("lastOrderAt", Value.fromBigInt(value));
+  }
+}
+
+export class Position extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save Position entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type Position must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("Position", id.toString(), this);
+    }
+  }
+
+  static load(id: string): Position | null {
+    return changetype<Position | null>(store.get("Position", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get symbol(): string {
+    let value = this.get("symbol");
+    return value!.toString();
+  }
+
+  set symbol(value: string) {
+    this.set("symbol", Value.fromString(value));
+  }
+
+  get qtyWei(): BigInt {
+    let value = this.get("qtyWei");
+    return value!.toBigInt();
+  }
+
+  set qtyWei(value: BigInt) {
+    this.set("qtyWei", Value.fromBigInt(value));
+  }
+
+  get qty(): BigDecimal {
+    let value = this.get("qty");
+    return value!.toBigDecimal();
+  }
+
+  set qty(value: BigDecimal) {
+    this.set("qty", Value.fromBigDecimal(value));
+  }
+
+  get aUSDAmountWei(): BigInt {
+    let value = this.get("aUSDAmountWei");
+    return value!.toBigInt();
+  }
+
+  set aUSDAmountWei(value: BigInt) {
+    this.set("aUSDAmountWei", Value.fromBigInt(value));
+  }
+
+  get aUSDAmount(): BigDecimal {
+    let value = this.get("aUSDAmount");
+    return value!.toBigDecimal();
+  }
+
+  set aUSDAmount(value: BigDecimal) {
+    this.set("aUSDAmount", Value.fromBigDecimal(value));
+  }
+
+  get user(): string {
+    let value = this.get("user");
+    return value!.toString();
+  }
+
+  set user(value: string) {
+    this.set("user", Value.fromString(value));
+  }
+
+  get changedAt(): BigInt {
+    let value = this.get("changedAt");
+    return value!.toBigInt();
+  }
+
+  set changedAt(value: BigInt) {
+    this.set("changedAt", Value.fromBigInt(value));
+  }
+
+  get pricePerShareWei(): BigInt {
+    let value = this.get("pricePerShareWei");
+    return value!.toBigInt();
+  }
+
+  set pricePerShareWei(value: BigInt) {
+    this.set("pricePerShareWei", Value.fromBigInt(value));
+  }
+
+  get pricePerShare(): BigDecimal {
+    let value = this.get("pricePerShare");
+    return value!.toBigDecimal();
+  }
+
+  set pricePerShare(value: BigDecimal) {
+    this.set("pricePerShare", Value.fromBigDecimal(value));
+  }
+
+  get priceLastUpdated(): BigInt {
+    let value = this.get("priceLastUpdated");
+    return value!.toBigInt();
+  }
+
+  set priceLastUpdated(value: BigInt) {
+    this.set("priceLastUpdated", Value.fromBigInt(value));
+  }
+}
+
+export class Symbol extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save Symbol entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type Symbol must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("Symbol", id.toString(), this);
+    }
+  }
+
+  static load(id: string): Symbol | null {
+    return changetype<Symbol | null>(store.get("Symbol", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get logo(): string {
+    let value = this.get("logo");
+    return value!.toString();
+  }
+
+  set logo(value: string) {
+    this.set("logo", Value.fromString(value));
+  }
+
+  get contract(): string {
+    let value = this.get("contract");
+    return value!.toString();
+  }
+
+  set contract(value: string) {
+    this.set("contract", Value.fromString(value));
+  }
+
+  get pricePerShareWei(): BigInt {
+    let value = this.get("pricePerShareWei");
+    return value!.toBigInt();
+  }
+
+  set pricePerShareWei(value: BigInt) {
+    this.set("pricePerShareWei", Value.fromBigInt(value));
+  }
+
+  get pricePerShare(): BigDecimal {
+    let value = this.get("pricePerShare");
+    return value!.toBigDecimal();
+  }
+
+  set pricePerShare(value: BigDecimal) {
+    this.set("pricePerShare", Value.fromBigDecimal(value));
+  }
+
+  get priceLastUpdated(): BigInt {
+    let value = this.get("priceLastUpdated");
+    return value!.toBigInt();
+  }
+
+  set priceLastUpdated(value: BigInt) {
+    this.set("priceLastUpdated", Value.fromBigInt(value));
+  }
+
+  get tvlWei(): BigInt {
+    let value = this.get("tvlWei");
+    return value!.toBigInt();
+  }
+
+  set tvlWei(value: BigInt) {
+    this.set("tvlWei", Value.fromBigInt(value));
+  }
+
+  get tvl(): BigDecimal {
+    let value = this.get("tvl");
+    return value!.toBigDecimal();
+  }
+
+  set tvl(value: BigDecimal) {
+    this.set("tvl", Value.fromBigDecimal(value));
+  }
+
+  get tvlUsdWei(): BigInt {
+    let value = this.get("tvlUsdWei");
+    return value!.toBigInt();
+  }
+
+  set tvlUsdWei(value: BigInt) {
+    this.set("tvlUsdWei", Value.fromBigInt(value));
+  }
+
+  get tvlUsd(): BigDecimal {
+    let value = this.get("tvlUsd");
+    return value!.toBigDecimal();
+  }
+
+  set tvlUsd(value: BigDecimal) {
+    this.set("tvlUsd", Value.fromBigDecimal(value));
+  }
+
+  get txCount(): BigInt {
+    let value = this.get("txCount");
+    return value!.toBigInt();
+  }
+
+  set txCount(value: BigInt) {
+    this.set("txCount", Value.fromBigInt(value));
+  }
+}
+
+export class HourData extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save HourData entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type HourData must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("HourData", id.toString(), this);
+    }
+  }
+
+  static load(id: string): HourData | null {
+    return changetype<HourData | null>(store.get("HourData", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get date(): BigInt {
+    let value = this.get("date");
+    return value!.toBigInt();
+  }
+
+  set date(value: BigInt) {
+    this.set("date", Value.fromBigInt(value));
+  }
+
+  get volumeUsdWei(): BigInt {
+    let value = this.get("volumeUsdWei");
+    return value!.toBigInt();
+  }
+
+  set volumeUsdWei(value: BigInt) {
+    this.set("volumeUsdWei", Value.fromBigInt(value));
+  }
+
+  get volumeUsd(): BigDecimal {
+    let value = this.get("volumeUsd");
+    return value!.toBigDecimal();
+  }
+
+  set volumeUsd(value: BigDecimal) {
+    this.set("volumeUsd", Value.fromBigDecimal(value));
+  }
+
+  get tvlUSDWei(): BigInt {
+    let value = this.get("tvlUSDWei");
+    return value!.toBigInt();
+  }
+
+  set tvlUSDWei(value: BigInt) {
+    this.set("tvlUSDWei", Value.fromBigInt(value));
+  }
+
+  get tvlUSD(): BigDecimal {
+    let value = this.get("tvlUSD");
+    return value!.toBigDecimal();
+  }
+
+  set tvlUSD(value: BigDecimal) {
+    this.set("tvlUSD", Value.fromBigDecimal(value));
+  }
+
+  get txCount(): BigInt {
+    let value = this.get("txCount");
+    return value!.toBigInt();
+  }
+
+  set txCount(value: BigInt) {
+    this.set("txCount", Value.fromBigInt(value));
+  }
+
+  get userCount(): i32 {
+    let value = this.get("userCount");
+    return value!.toI32();
+  }
+
+  set userCount(value: i32) {
+    this.set("userCount", Value.fromI32(value));
+  }
+
+  get symbolCount(): i32 {
+    let value = this.get("symbolCount");
+    return value!.toI32();
+  }
+
+  set symbolCount(value: i32) {
+    this.set("symbolCount", Value.fromI32(value));
+  }
+
+  get orders(): Array<string> | null {
+    let value = this.get("orders");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toStringArray();
+    }
+  }
+
+  set orders(value: Array<string> | null) {
+    if (!value) {
+      this.unset("orders");
+    } else {
+      this.set("orders", Value.fromStringArray(<Array<string>>value));
+    }
+  }
+}
+
+export class DayData extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save DayData entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type DayData must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("DayData", id.toString(), this);
+    }
+  }
+
+  static load(id: string): DayData | null {
+    return changetype<DayData | null>(store.get("DayData", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get date(): BigInt {
+    let value = this.get("date");
+    return value!.toBigInt();
+  }
+
+  set date(value: BigInt) {
+    this.set("date", Value.fromBigInt(value));
+  }
+
+  get volumeUsdWei(): BigInt {
+    let value = this.get("volumeUsdWei");
+    return value!.toBigInt();
+  }
+
+  set volumeUsdWei(value: BigInt) {
+    this.set("volumeUsdWei", Value.fromBigInt(value));
+  }
+
+  get volumeUsd(): BigDecimal {
+    let value = this.get("volumeUsd");
+    return value!.toBigDecimal();
+  }
+
+  set volumeUsd(value: BigDecimal) {
+    this.set("volumeUsd", Value.fromBigDecimal(value));
+  }
+
+  get tvlUSDWei(): BigInt {
+    let value = this.get("tvlUSDWei");
+    return value!.toBigInt();
+  }
+
+  set tvlUSDWei(value: BigInt) {
+    this.set("tvlUSDWei", Value.fromBigInt(value));
+  }
+
+  get tvlUSD(): BigDecimal {
+    let value = this.get("tvlUSD");
+    return value!.toBigDecimal();
+  }
+
+  set tvlUSD(value: BigDecimal) {
+    this.set("tvlUSD", Value.fromBigDecimal(value));
+  }
+
+  get txCount(): BigInt {
+    let value = this.get("txCount");
+    return value!.toBigInt();
+  }
+
+  set txCount(value: BigInt) {
+    this.set("txCount", Value.fromBigInt(value));
+  }
+
+  get userCount(): i32 {
+    let value = this.get("userCount");
+    return value!.toI32();
+  }
+
+  set userCount(value: i32) {
+    this.set("userCount", Value.fromI32(value));
+  }
+
+  get symbolCount(): i32 {
+    let value = this.get("symbolCount");
+    return value!.toI32();
+  }
+
+  set symbolCount(value: i32) {
+    this.set("symbolCount", Value.fromI32(value));
+  }
+
+  get orders(): Array<string> | null {
+    let value = this.get("orders");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toStringArray();
+    }
+  }
+
+  set orders(value: Array<string> | null) {
+    if (!value) {
+      this.unset("orders");
+    } else {
+      this.set("orders", Value.fromStringArray(<Array<string>>value));
+    }
+  }
+}
+
+export class HourSymbolData extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save HourSymbolData entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type HourSymbolData must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("HourSymbolData", id.toString(), this);
+    }
+  }
+
+  static load(id: string): HourSymbolData | null {
+    return changetype<HourSymbolData | null>(store.get("HourSymbolData", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get date(): BigInt {
+    let value = this.get("date");
+    return value!.toBigInt();
+  }
+
+  set date(value: BigInt) {
+    this.set("date", Value.fromBigInt(value));
+  }
+
+  get symbol(): string {
+    let value = this.get("symbol");
+    return value!.toString();
+  }
+
+  set symbol(value: string) {
+    this.set("symbol", Value.fromString(value));
+  }
+
+  get volumeUsdWei(): BigInt {
+    let value = this.get("volumeUsdWei");
+    return value!.toBigInt();
+  }
+
+  set volumeUsdWei(value: BigInt) {
+    this.set("volumeUsdWei", Value.fromBigInt(value));
+  }
+
+  get volumeUsd(): BigDecimal {
+    let value = this.get("volumeUsd");
+    return value!.toBigDecimal();
+  }
+
+  set volumeUsd(value: BigDecimal) {
+    this.set("volumeUsd", Value.fromBigDecimal(value));
+  }
+
+  get tvlUSDWei(): BigInt {
+    let value = this.get("tvlUSDWei");
+    return value!.toBigInt();
+  }
+
+  set tvlUSDWei(value: BigInt) {
+    this.set("tvlUSDWei", Value.fromBigInt(value));
+  }
+
+  get tvlUSD(): BigDecimal {
+    let value = this.get("tvlUSD");
+    return value!.toBigDecimal();
+  }
+
+  set tvlUSD(value: BigDecimal) {
+    this.set("tvlUSD", Value.fromBigDecimal(value));
+  }
+
+  get txCount(): BigInt {
+    let value = this.get("txCount");
+    return value!.toBigInt();
+  }
+
+  set txCount(value: BigInt) {
+    this.set("txCount", Value.fromBigInt(value));
+  }
+
+  get users(): Array<string> | null {
+    let value = this.get("users");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toStringArray();
+    }
+  }
+
+  set users(value: Array<string> | null) {
+    if (!value) {
+      this.unset("users");
+    } else {
+      this.set("users", Value.fromStringArray(<Array<string>>value));
+    }
+  }
+
+  get orders(): Array<string> | null {
+    let value = this.get("orders");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toStringArray();
+    }
+  }
+
+  set orders(value: Array<string> | null) {
+    if (!value) {
+      this.unset("orders");
+    } else {
+      this.set("orders", Value.fromStringArray(<Array<string>>value));
+    }
+  }
+}
+
+export class DaySymbolData extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id != null, "Cannot save DaySymbolData entity without an ID");
+    if (id) {
+      assert(
+        id.kind == ValueKind.STRING,
+        `Entities of type DaySymbolData must have an ID of type String but the id '${id.displayData()}' is of type ${id.displayKind()}`
+      );
+      store.set("DaySymbolData", id.toString(), this);
+    }
+  }
+
+  static load(id: string): DaySymbolData | null {
+    return changetype<DaySymbolData | null>(store.get("DaySymbolData", id));
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value!.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get date(): BigInt {
+    let value = this.get("date");
+    return value!.toBigInt();
+  }
+
+  set date(value: BigInt) {
+    this.set("date", Value.fromBigInt(value));
+  }
+
+  get symbol(): string {
+    let value = this.get("symbol");
+    return value!.toString();
+  }
+
+  set symbol(value: string) {
+    this.set("symbol", Value.fromString(value));
+  }
+
+  get volumeUsdWei(): BigInt {
+    let value = this.get("volumeUsdWei");
+    return value!.toBigInt();
+  }
+
+  set volumeUsdWei(value: BigInt) {
+    this.set("volumeUsdWei", Value.fromBigInt(value));
+  }
+
+  get volumeUsd(): BigDecimal {
+    let value = this.get("volumeUsd");
+    return value!.toBigDecimal();
+  }
+
+  set volumeUsd(value: BigDecimal) {
+    this.set("volumeUsd", Value.fromBigDecimal(value));
+  }
+
+  get tvlUSDWei(): BigInt {
+    let value = this.get("tvlUSDWei");
+    return value!.toBigInt();
+  }
+
+  set tvlUSDWei(value: BigInt) {
+    this.set("tvlUSDWei", Value.fromBigInt(value));
+  }
+
+  get tvlUSD(): BigDecimal {
+    let value = this.get("tvlUSD");
+    return value!.toBigDecimal();
+  }
+
+  set tvlUSD(value: BigDecimal) {
+    this.set("tvlUSD", Value.fromBigDecimal(value));
+  }
+
+  get txCount(): BigInt {
+    let value = this.get("txCount");
+    return value!.toBigInt();
+  }
+
+  set txCount(value: BigInt) {
+    this.set("txCount", Value.fromBigInt(value));
+  }
+
+  get users(): Array<string> | null {
+    let value = this.get("users");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toStringArray();
+    }
+  }
+
+  set users(value: Array<string> | null) {
+    if (!value) {
+      this.unset("users");
+    } else {
+      this.set("users", Value.fromStringArray(<Array<string>>value));
+    }
+  }
+
+  get orders(): Array<string> | null {
+    let value = this.get("orders");
+    if (!value || value.kind == ValueKind.NULL) {
+      return null;
+    } else {
+      return value.toStringArray();
+    }
+  }
+
+  set orders(value: Array<string> | null) {
+    if (!value) {
+      this.unset("orders");
+    } else {
+      this.set("orders", Value.fromStringArray(<Array<string>>value));
+    }
   }
 }
