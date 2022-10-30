@@ -1,35 +1,25 @@
 import {Order, Position} from "../../generated/schema";
-import {BigDecimal, BigInt} from "@graphprotocol/graph-ts";
-import Helper from "../Helper";
+import {BigDecimal, BigInt, log} from "@graphprotocol/graph-ts";
+import DateHelper from "../DateHelper";
 import SymbolLogic from "./SymbolLogic";
+import NumberHelper from "../NumberHelper";
 
 export default class PositionLogic {
 
 
-    public getOrCreatePosition(userId : string, entity : Order) : Position {
-        let positionId = (userId + "_" + entity.symbol).toString();
+    public getOrCreatePosition(walletId : string, order : Order) : Position {
+        let positionId = (walletId + "_" + order.symbol).toString();
         let position = Position.load(positionId);
         if (position == null) {
             position = new Position(positionId);
-            position.aUSDAmountWei = BigInt.fromI32(0);
-            position.aUSDAmount = BigDecimal.fromString("0");
+            position.txCount = BigInt.fromI32(0);
         }
-        position.user = userId;
-        position.symbol = entity.symbol;
-        position.changedAt = entity.filledAt;
-        position.qtyWei = entity.qtyWei;
-        position.qty = Helper.getDecimal(position.qtyWei);
-
-        let symbolLogic = new SymbolLogic();
-        let symbol = symbolLogic.get(entity.symbol);
-        if (symbol) {
-            position.pricePerShareWei = symbol.pricePerShareWei;
-            position.pricePerShare = symbol.pricePerShare;
-            position.priceLastUpdated = symbol.priceLastUpdated;
-
-            position.aUSDAmountWei = position.qtyWei.times(symbol.pricePerShareWei).div(BigInt.fromI64(10**18))
-            position.aUSDAmount = Helper.getDecimal(position.aUSDAmountWei);
-        }
+        position.wallet = walletId;
+        position.symbol = order.symbol;
+        position.tslWei = order.tslWei;
+        position.tsl = NumberHelper.getDecimal(position.tslWei);
+        position.txCount = position.txCount.plus(BigInt.fromI32(1))
+        position.updated = order.filledAt;
         position.save();
 
         return position;

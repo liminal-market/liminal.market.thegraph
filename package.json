@@ -4,29 +4,17 @@
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph build",
-    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ liminal-market/liminal-market",
+    "deploy-mumbai": "graph deploy --network mumbai --node https://api.thegraph.com/deploy/ liminal-market/liminal-market-mumbai",
+    "deploy-fuji": "graph deploy --network fuji --node https://api.thegraph.com/deploy/ liminal-market/liminal-market-fuji",
     "create-local": "graph create --node http://localhost:8020/ liminal-market/order-executed",
     "remove-local": "graph remove --node http://localhost:8020/ liminal-market/order-executed",
     "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 liminal-market/order-executed",
-    "test": "jest"
+    "test": "graph test",
+    "coverage": "graph test -- -c"
   },
   "dependencies": {
-    "@graphprotocol/graph-cli": "0.33.0",
-    "@graphprotocol/graph-ts": "0.27.0"
-  },
-  "devDependencies": {
-    "@types/jest": "^28.1.6",
-    "jest": "^28.1.3",
-    "ts-jest": "^28.0.7"
-  },
-  "jest": {
-    "preset": "ts-jest",
-    "testEnvironment": "node",
-    "transform": {
-      "^.+\\.(ts|tsx)$": "ts-jest"
-    },
-    "coveragePathIgnorePatterns": [
-      "/node_modules/"
-    ]
+    "@graphprotocol/graph-cli": "0.35.0",
+    "@graphprotocol/graph-ts": "0.28.1",
+    "matchstick-as": "^0.5.0"
   }
 }

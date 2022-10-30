@@ -1,7 +1,22 @@
 {
   "mumbai": {
     "LiminalMarket": {
-      "address": "0xa5859aee062803C08a15D112d40736Dede9541B1"
+      "address": "0x2BFb0207BC88BA9e2Ac74F19c9e88EdCcdBbC2a9",
+      "startBlock": 26585148
+    },
+    "aUSD": {
+      "address": "0xe65Fb29C8CeB720755D456233c971DDb11fcbb8d",
+      "startBlock": 26585148
+    }
+  },
+  "fuji": {
+    "LiminalMarket": {
+      "address": "0x098A512B017408008a23ECe22843788799CDebFd",
+      "startBlock": 13455105
+    },
+    "aUSD": {
+      "address": "0xbAc482aE0b0d652854df377be566445984A021ED",
+      "startBlock": 13455105
     }
   }
 }

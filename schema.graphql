@@ -1,66 +1,107 @@
 type LiminalMarketInfo @entity {
   id: ID!
   txCount : BigInt!
-  userCount: Int!
+  orderExecutedCount : BigInt!
+  orderFailedCount : BigInt!
+  spenderCount: Int!
+  walletCount: Int!
   symbolCount: Int!
-  tvlAUSDWei : BigInt!
-  tvlAUSD : BigDecimal!
-  tvlSymbolUSDWei : BigInt!
-  tvlSymbolUSD : BigDecimal!
+  balanceWei : BigInt!
+  balance : BigDecimal!
+  valueWei : BigInt!
+  value : BigDecimal!
+  tslWei : BigInt!
+  tsl : BigDecimal!
   lastOrderAt: BigInt!
+  symbols:[Symbol!]
+}
+
+type Spender @entity {
+  id: ID!
+  txCount : BigInt!
+  orderExecutedCount : BigInt!
+  orderFailedCount : BigInt!
 }
 
 type Order @entity {
   id: ID!
-  recipient: Bytes!
-  symbol: String!
+  dailyId : BigInt!
+  hourlyId : BigInt!
+  symbol: Symbol!
   side: String!
-  qtyWei: BigInt!
-  qty: BigDecimal!
+  tslWei: BigInt!
+  tsl: BigDecimal!
   filledQtyWei: BigInt!
   filledQty: BigDecimal!
   filledAvgPriceWei: BigInt!
   filledAvgPrice: BigDecimal!
   filledAt: BigInt!
+  costWei : BigInt!
+  cost : BigDecimal!
   commissionWei: BigInt!
   commission: BigDecimal!
-  aUsdBalanceAfterOrderWei: BigInt!
-  aUsdBalanceAfterOrder: BigDecimal!
-  user: User!
+  aUsdBalanceWei: BigInt!
+  aUsdBalance: BigDecimal!
+  tradeId : String!
+  wallet: Wallet!
+  spender : Spender!
 }
 
 type OrderFail @entity {
   id: ID!
-  symbol: String!
+  dailyId : BigInt!
+  hourlyId : BigInt!
+  wallet : Wallet!
+  symbol: Symbol!
   message: String!
   buyingPowerWei: BigInt!
   buyingPower: BigDecimal!
-  costWei: BigInt!
-  cost:BigDecimal!
+  spender : Wallet!
+  created : BigInt!
 }
 
-type User @entity {
+type OrderTrade @entity {
   id: ID!
-  currentAUsdBalanceWei: BigInt!
-  currentAUsdBalance: BigDecimal!
+  count : Int!
+  lastFilledAt: BigInt!
+  orders: [Order!]
+}
+
+type Wallet @entity {
+  id: ID!
+  balanceWei: BigInt!
+  balance: BigDecimal!
   orders: [Order!]
   orderFails: [OrderFail!]
   positions: [Position!]
   lastOrderAt: BigInt!
+  updated: BigInt!
+  txCount : BigInt!
+  history : [WalletHistory!]
+}
+
+type WalletHistory @entity {
+  id: ID!
+  dailyId : BigInt!
+  hourlyId : BigInt!
+  wallet : Wallet!
+  balanceWei : BigInt!
+  balance : BigDecimal!
+  diffWei : BigInt!
+  diff : BigDecimal!
+  action: String!
+  created : BigInt!
+  createdISO : String!
 }
 
 type Position @entity {
   id: ID!
-  symbol: String!
-  qtyWei: BigInt!
-  qty: BigDecimal!
-  aUSDAmountWei: BigInt!
-  aUSDAmount: BigDecimal!
-  user: User!
-  changedAt: BigInt!
-  pricePerShareWei: BigInt!
-  pricePerShare: BigDecimal!
-  priceLastUpdated: BigInt!
+  symbol: Symbol!
+  tslWei: BigInt!
+  tsl: BigDecimal!
+  txCount : BigInt!
+  updated : BigInt!
+  wallet: Wallet!
 }
 
 type Symbol @entity {
@@ -70,62 +111,82 @@ type Symbol @entity {
   pricePerShareWei: BigInt!
   pricePerShare: BigDecimal!
   priceLastUpdated: BigInt!
-  tvlWei: BigInt!
-  tvl: BigDecimal!
-  tvlUsdWei: BigInt!
-  tvlUsd : BigDecimal!
+  tslWei: BigInt!
+  tsl: BigDecimal!
+  valueWei : BigInt!
+  value : BigDecimal!
   txCount : BigInt!
+  created : BigInt!
+  wallets: [Wallet!]
 }
 
 
-type HourData @entity {
+type HourlyData @entity {
   id: ID!
   date: BigInt!
-  volumeUsdWei : BigInt!
-  volumeUsd : BigDecimal!
-  tvlUSDWei : BigInt!
-  tvlUSD : BigDecimal!
-  txCount: BigInt!
-  userCount: Int!
   symbolCount: Int!
+  walletCount: Int!
+  txCount: BigInt!
+  sharesWei : BigInt!
+  shares : BigDecimal!
+  tslWei : BigInt!
+  tsl : BigDecimal!
+  aUsdVolumeWei : BigInt!
+  aUsdVolume: BigDecimal!
+  valueWei : BigInt!
+  value : BigDecimal!
   orders: [Order!]
+  orderFails: [OrderFail!]
 }
 
-type DayData @entity {
+type DailyData @entity {
   id: ID!
   date: BigInt!
-  volumeUsdWei : BigInt!
-  volumeUsd : BigDecimal!
-  tvlUSDWei : BigInt!
-  tvlUSD : BigDecimal!
-  txCount: BigInt!
-  userCount: Int!
   symbolCount: Int!
+  walletCount: Int!
+  txCount: BigInt!
+  sharesWei : BigInt!
+  shares : BigDecimal!
+  tslWei : BigInt!
+  tsl : BigDecimal!
+  aUsdVolumeWei : BigInt!
+  aUsdVolume: BigDecimal!
+  valueWei : BigInt!
+  value : BigDecimal!
   orders: [Order!]
+  orderFails: [OrderFail!]
 }
 
-type HourSymbolData @entity {
+type HourlySymbolData @entity {
   id: ID!
   date: BigInt!
-  symbol: String!
-  volumeUsdWei : BigInt!
-  volumeUsd : BigDecimal!
-  tvlUSDWei : BigInt!
-  tvlUSD : BigDecimal!
+  symbol: Symbol!
   txCount: BigInt!
-  users: [User!]
+  sharesWei : BigInt!
+  shares : BigDecimal!
+  tslWei : BigInt!
+  tsl : BigDecimal!
+  aUsdVolumeWei : BigInt!
+  aUsdVolume: BigDecimal!
+  valueWei : BigInt!
+  value : BigDecimal!
   orders: [Order!]
+  orderFails: [OrderFail!]
 }
 
-type DaySymbolData @entity {
+type DailySymbolData @entity {
   id: ID!
   date: BigInt!
-  symbol: String!
-  volumeUsdWei : BigInt!
-  volumeUsd : BigDecimal!
-  tvlUSDWei : BigInt!
-  tvlUSD : BigDecimal!
+  symbol: Symbol!
   txCount: BigInt!
-  users: [User!]
+  sharesWei : BigInt!
+  shares : BigDecimal!
+  tslWei : BigInt!
+  tsl : BigDecimal!
+  aUsdVolumeWei : BigInt!
+  aUsdVolume: BigDecimal!
+  valueWei : BigInt!
+  value : BigDecimal!
   orders: [Order!]
+  orderFails: [OrderFail!]
 }

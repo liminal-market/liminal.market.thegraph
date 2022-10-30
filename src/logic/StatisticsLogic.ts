@@ -1,146 +1,329 @@
-import {DayData, HourData, HourSymbolData, Order} from "../../generated/schema";
-import Helper from "../Helper";
-import {BigInt} from "@graphprotocol/graph-ts";
+import {
+    DailyData,
+    DailySymbolData,
+    HourlyData,
+    HourlySymbolData,
+    Order,
+    OrderFail
+} from "../../generated/schema";
+import DateHelper from "../DateHelper";
+import {BigDecimal, BigInt, Entity} from "@graphprotocol/graph-ts";
 import LiminalMarketLogic from "./LiminalMarketLogic";
 import SymbolLogic from "./SymbolLogic";
+import NumberHelper from "../NumberHelper";
+import {OrderFailed} from "../../generated/LiminalMarket/LiminalMarket";
 
 export default class StatisticsLogic {
 
-    public loadData(order: Order) : void {
-        this.loadHourlyData(order);
-        this.loadDailyData(order);
-        this.loadDailySymbolData(order);
-        this.loadHourlySymbolData(order);
+    public loadOrderExecutedStatistics(order: Order): void {
+        this.loadOrderExecutedHourlyData(order);
+        this.loadOrderExecutedHourlySymbolData(order);
+        this.loadOrderExecutedDailyData(order);
+        this.loadOrderExecutedDailySymbolData(order);
+    }
+
+    public loadOrderFailedStatistics(orderFail: OrderFail): void {
+        this.loadOrderFailedHourlyData(orderFail);
+        this.loadOrderFailedHourlySymbolData(orderFail);
+        this.loadOrderFailedDailyData(orderFail);
+        this.loadOrderFailedDailySymbolData(orderFail);
+    }
+
+    private loadOrderExecutedHourlyData(order: Order): void {
+        let id = this.getId('HourlyData', order.filledAt);
+
+        let data = this.getHourlyDataInstance(id);
+        if (!data) return;
+
+        this.setHourlyDataForOrderExecuted(data, order);
+    }
+
+    private loadOrderExecutedHourlySymbolData(order: Order): void {
+        let id = this.getId('HourlySymbolData', order.filledAt);
+
+        let data = this.getHourlySymbolDataInstance(id);
+        if (!data) return;
+
+        this.setHourlySymbolDataForOrderExecuted(data, order);
+    }
+
+    private loadOrderExecutedDailyData(order: Order): void {
+        let id = this.getId('DailyData', order.filledAt);
+
+        let data = this.getDailyDataInstance(id);
+        if (!data) return;
+
+        this.setDailyDataForOrderExecuted(data, order);
+    }
+
+    private loadOrderExecutedDailySymbolData(order: Order): void {
+        let id = this.getId('DailySymbolData', order.filledAt);
+
+        let data = this.getDailySymbolDataInstance(id);
+        if (!data) return;
+
+        this.setDailySymbolDataForOrderExecuted(data, order);
+    }
+
+    private loadOrderFailedHourlyData(orderFail: OrderFail): void {
+        let id = this.getId('HourlyData', orderFail.created);
+
+        let data = this.getHourlyDataInstance(id);
+        if (!data) return;
+        this.setHourlyDataForOrderFailed(data, orderFail);
+    }
+
+    private loadOrderFailedHourlySymbolData(orderFail: OrderFail): void {
+        let id = this.getId('HourlySymbolData', orderFail.created);
+
+        let data = this.getHourlySymbolDataInstance(id);
+        if (!data) return;
+        this.setHourlySymbolDataForOrderFailed(data, orderFail);
+    }
+
+    private loadOrderFailedDailyData(orderFail: OrderFail): void {
+        let id = this.getId('DailyData', orderFail.created);
+
+        let data = this.getDailyDataInstance(id);
+        if (!data) return;
+        this.setDailyDataForOrderFailed(data, orderFail);
+    }
+
+    private loadOrderFailedDailySymbolData(orderFail: OrderFail): void {
+        let id = this.getId('DailySymbolData', orderFail.created);
+
+        let data = this.getDailySymbolDataInstance(id);
+        if (!data) return;
+        this.setDailySymbolDataForOrderFailed(data, orderFail);
     }
 
 
-    public loadHourlyData(order: Order): void {
-        let hourId = Helper.getHourId(order.filledAt)
-
-        let hourData = HourData.load(hourId.toString());
-        if (hourData == null) {
-            hourData = new HourData(hourId.toString())
-            hourData.date = hourId;
-            hourData.volumeUsdWei = BigInt.fromI32(0);
-            hourData.tvlUSDWei = BigInt.fromI32(0);
-            hourData.orders = new Array<string>()
-        }
+    private setHourlyDataForOrderFailed(data: HourlyData, orderFail: OrderFail): void {
 
         let liminalMarketLogic = new LiminalMarketLogic();
         let info = liminalMarketLogic.getLiminalMarketInfo();
+        data.txCount = info.txCount;
 
-        let bigUsdValue = Helper.getUsdValueWei(order);
-        hourData.volumeUsdWei = hourData.volumeUsdWei.plus(bigUsdValue)
-        hourData.volumeUsd = Helper.getDecimal(hourData.volumeUsdWei);
-        hourData.tvlUSDWei = info.tvlAUSDWei;
-        hourData.tvlUSD = info.tvlAUSD;
-        hourData.symbolCount = info.symbolCount;
-        hourData.txCount = info.txCount;
-        hourData.userCount = info.userCount;
-
-        let orders = hourData.orders!;
-        orders.push(order.id);
-        hourData.orders = orders;
-
-        hourData.save();
+        let orderFails = data.orderFails!;
+        orderFails.push(orderFail.id);
+        data.orderFails = orderFails;
+        data.save();
     }
 
-    public loadDailyData(order: Order): void {
-        let dayId = Helper.getDayId(order.filledAt)
-
-        let dayData = DayData.load(dayId.toString());
-        if (dayData == null) {
-            dayData = new DayData(dayId.toString())
-            dayData.date = dayId;
-            dayData.volumeUsdWei = BigInt.fromI32(0);
-            dayData.orders = new Array<string>();
-        }
+    private setHourlySymbolDataForOrderFailed(data: HourlySymbolData, orderFail: OrderFail): void {
 
         let liminalMarketLogic = new LiminalMarketLogic();
         let info = liminalMarketLogic.getLiminalMarketInfo();
+        data.txCount = info.txCount;
 
-        let bigUsdValue = Helper.getUsdValueWei(order);
-        dayData.volumeUsdWei = dayData.volumeUsdWei.plus(bigUsdValue)
-        dayData.volumeUsd = Helper.getDecimal(dayData.volumeUsdWei);
-        dayData.tvlUSDWei = info.tvlAUSDWei;
-        dayData.tvlUSD = info.tvlAUSD;
-        dayData.symbolCount = info.symbolCount;
-        dayData.txCount = info.txCount;
-        dayData.userCount = info.userCount;
-
-        let orders = dayData.orders!;
-        orders.push(order.id);
-        dayData.orders = orders;
-
-        dayData.save();
+        let orderFails = data.orderFails!;
+        orderFails.push(orderFail.id);
+        data.orderFails = orderFails;
+        data.save();
     }
 
-    public loadHourlySymbolData(order: Order): void {
-        let symbolLogic = new SymbolLogic();
-        let symbol = symbolLogic.get(order.symbol)
-        if (!symbol) return;
+    private setDailyDataForOrderFailed(data: DailyData, orderFail: OrderFail): void {
 
-        let hourId = Helper.getHourId(order.filledAt)
-        let id = order.symbol + "_" + hourId.toString();
+        let liminalMarketLogic = new LiminalMarketLogic();
+        let info = liminalMarketLogic.getLiminalMarketInfo();
+        data.txCount = info.txCount;
 
-        let hourData = HourSymbolData.load(id);
-        if (hourData == null) {
-            hourData = new HourSymbolData(id)
-            hourData.date = hourId;
-            hourData.symbol = order.symbol;
-            hourData.volumeUsdWei = BigInt.fromI32(0);
-            hourData.users = new Array<string>();
-            hourData.orders = new Array<string>();
-        }
-        hourData.volumeUsdWei = order.filledQtyWei
-        hourData.volumeUsd = Helper.getDecimal(hourData.volumeUsdWei);
-        hourData.tvlUSDWei = symbol.tvlUsdWei
-        hourData.tvlUSD = Helper.getDecimal(hourData.tvlUSDWei);
-        hourData.txCount = symbol.txCount;
-
-        let users = hourData.users!;
-        users.push(order.recipient.toHex())
-        hourData.users = users;
-
-        let orders = hourData.orders!;
-        orders.push(order.id);
-        hourData.orders = orders;
-
-        hourData.save();
+        let orderFails = data.orderFails!;
+        orderFails.push(orderFail.id);
+        data.orderFails = orderFails;
+        data.save();
     }
 
-    public loadDailySymbolData(order: Order): void {
+    private setDailySymbolDataForOrderFailed(data: DailySymbolData, orderFail: OrderFail): void {
+
+        let liminalMarketLogic = new LiminalMarketLogic();
+        let info = liminalMarketLogic.getLiminalMarketInfo();
+        data.txCount = info.txCount;
+
+        let orderFails = data.orderFails!;
+        orderFails.push(orderFail.id);
+        data.orderFails = orderFails;
+        data.save();
+    }
+
+
+    private getHourlyDataInstance(id: string): HourlyData {
+        let data = HourlyData.load(id);
+        if (data) return data;
+
+        data = new HourlyData(id);
+        data.date = BigInt.fromString(data.id);
+        data.walletCount = 0
+        data.symbolCount = 0;
+        data.txCount = BigInt.fromI32(0);
+        data.sharesWei = BigInt.fromI32(0);
+        data.shares = BigDecimal.fromString("0");
+        data.tslWei = BigInt.fromI64(0);
+        data.tsl = BigDecimal.fromString('0');
+        data.aUsdVolumeWei = BigInt.fromI32(0);
+        data.aUsdVolume = BigDecimal.fromString("0");
+        data.orders = new Array<string>();
+        data.orderFails = new Array<string>();
+        return data;
+    }
+
+    private getHourlySymbolDataInstance(id: string): HourlySymbolData {
+        let data = HourlySymbolData.load(id);
+        if (data) return data;
+
+        data = new HourlySymbolData(id);
+        data.date = BigInt.fromString(data.id);
+        data.txCount = BigInt.fromI32(0);
+        data.sharesWei = BigInt.fromI32(0);
+        data.shares = BigDecimal.fromString("0");
+        data.tslWei = BigInt.fromI64(0);
+        data.tsl = BigDecimal.fromString('0');
+        data.aUsdVolumeWei = BigInt.fromI32(0);
+        data.aUsdVolume = BigDecimal.fromString("0");
+        data.orders = new Array<string>();
+        data.orderFails = new Array<string>();
+        return data;
+    }
+
+    private getDailyDataInstance(id: string): DailyData {
+        let data = DailyData.load(id);
+        if (data) return data;
+
+        data = new DailyData(id);
+        data.date = BigInt.fromString(data.id);
+        data.walletCount = 0
+        data.symbolCount = 0;
+        data.txCount = BigInt.fromI32(0);
+        data.sharesWei = BigInt.fromI32(0);
+        data.shares = BigDecimal.fromString("0");
+        data.tslWei = BigInt.fromI64(0);
+        data.tsl = BigDecimal.fromString('0');
+        data.aUsdVolumeWei = BigInt.fromI32(0);
+        data.aUsdVolume = BigDecimal.fromString("0");
+        data.orders = new Array<string>();
+        data.orderFails = new Array<string>();
+        return data;
+    }
+
+    private getDailySymbolDataInstance(id: string): DailySymbolData {
+        let data = DailySymbolData.load(id);
+        if (data) return data;
+
+        data = new DailySymbolData(id);
+        data.date = BigInt.fromString(data.id);
+        data.txCount = BigInt.fromI32(0);
+        data.sharesWei = BigInt.fromI32(0);
+        data.shares = BigDecimal.fromString("0");
+        data.tslWei = BigInt.fromI64(0);
+        data.tsl = BigDecimal.fromString('0');
+        data.aUsdVolumeWei = BigInt.fromI32(0);
+        data.aUsdVolume = BigDecimal.fromString("0");
+        data.orders = new Array<string>();
+        data.orderFails = new Array<string>();
+        return data;
+    }
+
+
+    private setHourlyDataForOrderExecuted(data: HourlyData, order: Order): void {
+        let liminalMarketLogic = new LiminalMarketLogic();
+        let info = liminalMarketLogic.getLiminalMarketInfo();
+
+        data.symbolCount = info.symbolCount;
+        data.txCount = info.txCount;
+        data.walletCount = info.walletCount;
+
+        data.sharesWei = NumberHelper.uintPlusOrMinus(order.side, data.sharesWei, order.filledQtyWei)
+        data.shares = NumberHelper.getDecimal(data.sharesWei);
+        data.tsl = info.tsl;
+        data.tslWei = info.tslWei;
+        data.aUsdVolumeWei = NumberHelper.uintPlusOrMinus(order.side, data.aUsdVolumeWei, order.costWei);
+        data.aUsdVolume = NumberHelper.getDecimal(data.aUsdVolumeWei);
+        data.valueWei = info.valueWei;
+        data.value = info.value;
+
+        let orders = data.orders!;
+        orders.push(order.id);
+        data.orders = orders;
+
+        data.save();
+    }
+
+    private setHourlySymbolDataForOrderExecuted(data: HourlySymbolData, order: Order): void {
         let symbolLogic = new SymbolLogic();
-        let symbol = symbolLogic.get(order.symbol)
+        let symbol = symbolLogic.get(order.symbol);
         if (!symbol) return;
 
-        let dayId = Helper.getDayId(order.filledAt)
-        let id = order.symbol + "_" + dayId.toString();
+        data.symbol = order.symbol;
+        data.txCount = symbol.txCount;
 
-        let dayData = HourSymbolData.load(id);
-        if (dayData == null) {
-            dayData = new HourSymbolData(id)
-            dayData.date = dayId;
-            dayData.symbol = order.symbol;
-            dayData.volumeUsdWei = BigInt.fromI32(0);
-            dayData.users = new Array<string>();
-            dayData.orders = new Array<string>();
-        }
-        dayData.volumeUsdWei = order.filledQtyWei
-        dayData.volumeUsd = Helper.getDecimal(dayData.volumeUsdWei);
-        dayData.tvlUSDWei = symbol.tvlUsdWei
-        dayData.tvlUSD = Helper.getDecimal(dayData.tvlUSDWei);
-        dayData.txCount = symbol.txCount;
+        data.sharesWei = NumberHelper.uintPlusOrMinus(order.side, data.sharesWei, order.filledQtyWei)
+        data.shares = NumberHelper.getDecimal(data.sharesWei);
+        data.tsl = symbol.tsl;
+        data.tslWei = symbol.tslWei;
+        data.aUsdVolumeWei = NumberHelper.uintPlusOrMinus(order.side, data.aUsdVolumeWei, order.costWei);
+        data.aUsdVolume = NumberHelper.getDecimal(data.aUsdVolumeWei);
+        data.valueWei = symbol.valueWei;
+        data.value = symbol.value;
 
-        let users = dayData.users!;
-        users.push(order.recipient.toHex())
-        dayData.users = users;
-
-        let orders = dayData.orders!;
+        let orders = data.orders!;
         orders.push(order.id);
-        dayData.orders = orders;
+        data.orders = orders;
 
-        dayData.save();
+        data.save();
+    }
+
+    private setDailyDataForOrderExecuted(data: DailyData, order: Order): void {
+        let liminalMarketLogic = new LiminalMarketLogic();
+        let info = liminalMarketLogic.getLiminalMarketInfo();
+
+        data.symbolCount = info.symbolCount;
+        data.txCount = info.txCount;
+        data.walletCount = info.walletCount;
+
+        data.sharesWei = NumberHelper.uintPlusOrMinus(order.side, data.sharesWei, order.filledQtyWei)
+        data.shares = NumberHelper.getDecimal(data.sharesWei);
+        data.tsl = info.tsl;
+        data.tslWei = info.tslWei;
+        data.aUsdVolumeWei = NumberHelper.uintPlusOrMinus(order.side, data.aUsdVolumeWei, order.costWei);
+        data.aUsdVolume = NumberHelper.getDecimal(data.aUsdVolumeWei);
+        data.valueWei = info.valueWei;
+        data.value = info.value;
+
+        let orders = data.orders!;
+        orders.push(order.id);
+        data.orders = orders;
+
+        data.save();
+    }
+
+    private setDailySymbolDataForOrderExecuted(data: DailySymbolData, order: Order): void {
+        let symbolLogic = new SymbolLogic();
+        let symbol = symbolLogic.get(order.symbol);
+        if (!symbol) return;
+
+        data.symbol = order.symbol;
+        data.txCount = symbol.txCount;
+
+        data.sharesWei = NumberHelper.uintPlusOrMinus(order.side, data.sharesWei, order.filledQtyWei)
+        data.shares = NumberHelper.getDecimal(data.sharesWei);
+        data.tsl = symbol.tsl;
+        data.tslWei = symbol.tslWei;
+        data.aUsdVolumeWei = NumberHelper.uintPlusOrMinus(order.side, data.aUsdVolumeWei, order.costWei);
+        data.aUsdVolume = NumberHelper.getDecimal(data.aUsdVolumeWei);
+        data.valueWei = symbol.valueWei;
+        data.value = symbol.value;
+
+        let orders = data.orders!;
+        orders.push(order.id);
+        data.orders = orders;
+
+        data.save();
+    }
+
+    private getId(name: string, dateTimeInMilliseconds: BigInt): string {
+        return (name.indexOf('Hourly') != -1)
+            ? DateHelper.getHourId(dateTimeInMilliseconds).toString()
+            : DateHelper.getDayId(dateTimeInMilliseconds).toString();
     }
 
 
