@@ -1,12 +1,12 @@
 {
   "mumbai": {
     "LiminalMarket": {
-      "address": "0x2BFb0207BC88BA9e2Ac74F19c9e88EdCcdBbC2a9",
-      "startBlock": 26585148
+      "address": "0xf9c4C08740Ca619feB03c14F9bE1df734CB53eca",
+      "startBlock": 28891560
     },
     "aUSD": {
-      "address": "0xe65Fb29C8CeB720755D456233c971DDb11fcbb8d",
-      "startBlock": 26585148
+      "address": "0xfF14E9C44e1Bf3894AD3173F9490b8a4823F2c63",
+      "startBlock": 28909506
     }
   },
   "fuji": {

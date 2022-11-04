@@ -31,8 +31,8 @@ dataSources:
     name: aUSD
     source:
       abi: aUSD
-      address: "0x7e71874B5E3e0605fC57c47F9ad3444143B94176"
-      startBlock: 28891556
+      address: "0xfF14E9C44e1Bf3894AD3173F9490b8a4823F2c63"
+      startBlock: 28909506
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
