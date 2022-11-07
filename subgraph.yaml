@@ -6,8 +6,8 @@ dataSources:
     name: LiminalMarket
     source:
       abi: LiminalMarket
-      address: "0xf9c4C08740Ca619feB03c14F9bE1df734CB53eca"
-      startBlock: 28891560
+      address: "0x6e9C29e416dc9F7A6A03ffebaB3f02Ef62a1baE4"
+      startBlock: 29028516
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6
@@ -31,8 +31,8 @@ dataSources:
     name: aUSD
     source:
       abi: aUSD
-      address: "0xfF14E9C44e1Bf3894AD3173F9490b8a4823F2c63"
-      startBlock: 28909506
+      address: "0x38F2B1E9F11937dD276D64521535b15280A7F137"
+      startBlock: 29028516
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.6

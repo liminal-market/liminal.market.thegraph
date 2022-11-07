@@ -30,10 +30,10 @@ export default class WalletHistoryLogic {
 
     // @ts-ignore
     private getActionName(action: i32) : string {
-        if (action == 1) return "Fund";
-        if (action == 2) return "OrderBuy";
-        if (action == 3) return "OrderSell";
-        if (action == 4) return "OrderExecuted";
+        if (action == 0) return "Fund";
+        if (action == 1) return "OrderBuy";
+        if (action == 2) return "OrderSell";
+        if (action == 3) return "OrderExecuted";
 
         return "";
     }
