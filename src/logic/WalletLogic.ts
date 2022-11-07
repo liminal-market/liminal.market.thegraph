@@ -44,14 +44,6 @@ export default class WalletLogic {
     }
 
     public storeOrderExecuted(wallet : Wallet, order : Order, positionId : string, transactionId : string, created : BigInt) : void {
-        let walletHistoryLogic = new WalletHistoryLogic();
-        let walletHistory = walletHistoryLogic.add(transactionId, wallet.id, order.aUsdBalanceWei,
-                                                wallet.balanceWei, WalletHistoryLogic.OrderExecuted, created);
-
-        let history = wallet.history!;
-        history.push(walletHistory.id);
-        wallet.history = history;
-
         let positions = wallet.positions!;
         positions.push(positionId);
         wallet.positions = positions;

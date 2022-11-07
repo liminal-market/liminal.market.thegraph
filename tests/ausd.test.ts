@@ -12,7 +12,7 @@ describe('Test aUSD', () => {
     })
 
     test('Test handleBalanceSet', () => {
-        let balanceSetEvent = getBalanceSetEvent(BigInt.fromI32(1039230));
+        let balanceSetEvent = getBalanceSetEvent(BigInt.fromI32(1039230), 1);
 
         handleBalanceSet(balanceSetEvent)
 

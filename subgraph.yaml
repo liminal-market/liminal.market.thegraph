@@ -44,7 +44,7 @@ dataSources:
         - name: aUSD
           file: ./abis/aUSD.json
       eventHandlers:
-        - event: BalanceSet(address,uint256)
+        - event: BalanceSet(address,uint256,uint8)
           handler: handleBalanceSet
       file: ./src/ausd.ts
     network: mumbai

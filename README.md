@@ -29,4 +29,6 @@ To set up unit testing, check out https://thegraph.com/docs/en/developing/unit-t
 If you are using Windows, you need to run through WSL. 
 
 Go to path on c: driver, for example /mnt/c/users/{username}/source/repos/liminal.market.thegraph
+Might need to install node first: nvm install node
 Run: npm run test
+

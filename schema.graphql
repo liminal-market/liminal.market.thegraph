@@ -89,7 +89,8 @@ type WalletHistory @entity {
   balance : BigDecimal!
   diffWei : BigInt!
   diff : BigDecimal!
-  action: String!
+  action: BigInt!
+  actionName : String!
   created : BigInt!
   createdISO : String!
 }

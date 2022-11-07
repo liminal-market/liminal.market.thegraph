@@ -15,7 +15,7 @@ export default class AUsdLogic {
 
         let walletHistoryLogic = new WalletHistoryLogic();
         let walletHistory = walletHistoryLogic.add(event.transaction.hash.toHex(), wallet.id,
-                    event.params.balance, wallet.balanceWei, WalletHistoryLogic.BalanceSet, event.block.timestamp)
+                    event.params.balance, wallet.balanceWei, event.params.action, event.block.timestamp)
 
         walletLogic.storeBalanceSet(wallet, event.params.balance, event.block.timestamp, walletHistory.id);
 

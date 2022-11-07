@@ -51,7 +51,10 @@ export function getStringParam(key: string, value: string): ethereum.EventParam 
 export function getBigIntParam(key: string, value: BigInt): ethereum.EventParam {
     return new ethereum.EventParam(key, ethereum.Value.fromUnsignedBigInt(value));
 }
-
+// @ts-ignore
+export function geti32Param(key: string, value: i32): ethereum.EventParam {
+    return new ethereum.EventParam(key, ethereum.Value.fromI32(value));
+}
 export function getAddressParam(key: string, value: Address): ethereum.EventParam {
     return new ethereum.EventParam(key, ethereum.Value.fromAddress(value));
 }
@@ -93,13 +96,14 @@ let hashArray = ['0xb25a7ba7c6e0dac2e7a685be3986503c12def933', '0x78a362a9c92a92
     '0x2bd080b91a7a510afcf0d5610922de875bd66223'
 ]
 
-export function getBalanceSetEvent(balance: BigInt, recipient: Address = WalletAddress): BalanceSet {
+// @ts-ignore
+export function getBalanceSetEvent(balance: BigInt, action : i32, recipient: Address = WalletAddress): BalanceSet {
     // @ts-ignore
-
     let balanceSet = changetype<BalanceSet>(newMockEvent());
     balanceSet.parameters = new Array<ethereum.EventParam>();
     balanceSet.parameters.push(getAddressParam('recipient', recipient));
     balanceSet.parameters.push(getBigIntParam('balance', balance));
+    balanceSet.parameters.push(geti32Param('action', action));
     balanceSet.block.timestamp = getNextTimestamp();
     balanceSet.transaction.hash = Address.fromString(hashArray[nonce.toI32()]) as Bytes;
     return balanceSet;

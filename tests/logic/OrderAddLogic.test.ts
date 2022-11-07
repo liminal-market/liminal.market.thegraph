@@ -85,26 +85,6 @@ describe('Test OrderAddLogic', () => {
         assert.fieldEquals('Symbol', event.params.symbol, 'value', NumberHelper.getDecimal(NumberHelper.times(event.params.tsl, event.params.filledAvgPrice)).toString());
         assert.fieldEquals('Symbol', event.params.symbol, 'wallets', '[' + event.params.recipient.toHex() + ']');
 
-        let walletHistoryId = event.transaction.hash.toHex();
-        assert.fieldEquals('WalletHistory', walletHistoryId, 'wallet', event.params.recipient.toHex());
-        assert.fieldEquals('WalletHistory', walletHistoryId, 'balanceWei', event.params.aUsdBalance.toString());
-        assert.fieldEquals('WalletHistory', walletHistoryId, 'balance', NumberHelper.getDecimal(event.params.aUsdBalance).toString());
-        assert.fieldEquals('WalletHistory', walletHistoryId, 'diffWei', event.params.aUsdBalance.toString());
-        assert.fieldEquals('WalletHistory', walletHistoryId, 'diff', NumberHelper.getDecimal(event.params.aUsdBalance).toString());
-        assert.fieldEquals('WalletHistory', walletHistoryId, 'action', 'OrderExecuted');
-        assert.fieldEquals('WalletHistory', walletHistoryId, 'created', DateHelper.getJsTimestamp(event.block.timestamp).toString());
-        assert.fieldEquals('WalletHistory', walletHistoryId, 'createdISO', new Date(DateHelper.getJsTimestamp(event.block.timestamp).toI64()).toISOString());
-
-        let walletId = event.params.recipient.toHex();
-        assert.fieldEquals('Wallet', walletId, 'txCount', '1');
-        assert.fieldEquals('Wallet', walletId, 'lastOrderAt', DateHelper.getJsTimestamp(event.block.timestamp).toString());
-        assert.fieldEquals('Wallet', walletId, 'updated', DateHelper.getJsTimestamp(event.block.timestamp).toString());
-        assert.fieldEquals('Wallet', walletId, 'balanceWei', event.params.aUsdBalance.toString());
-        assert.fieldEquals('Wallet', walletId, 'balance', NumberHelper.getDecimal(event.params.aUsdBalance).toString());
-        assert.fieldEquals('Wallet', walletId, 'orders', '[' + orderId + ']');
-        assert.fieldEquals('Wallet', walletId, 'positions', '[' + positionId + ']');
-        assert.fieldEquals('Wallet', walletId, 'history', '[' + walletHistoryId + ']');
-
         assert.fieldEquals('LiminalMarketInfo', '1', 'walletCount', '1');
         assert.fieldEquals('LiminalMarketInfo', '1', 'lastOrderAt', event.params.filledAt.toString());
         assert.fieldEquals('LiminalMarketInfo', '1', 'txCount', '1');
