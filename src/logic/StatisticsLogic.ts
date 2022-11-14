@@ -159,6 +159,8 @@ export default class StatisticsLogic {
         data.sharesWei = BigInt.fromI32(0);
         data.shares = BigDecimal.fromString("0");
         data.tslWei = BigInt.fromI64(0);
+        data.value = BigDecimal.fromString('0');
+        data.valueWei = BigInt.fromI32(0);
         data.tsl = BigDecimal.fromString('0');
         data.aUsdVolumeWei = BigInt.fromI32(0);
         data.aUsdVolume = BigDecimal.fromString("0");
@@ -172,12 +174,15 @@ export default class StatisticsLogic {
         if (data) return data;
 
         data = new HourlySymbolData(id);
+        data.symbol = id;
         data.date = BigInt.fromString(data.id);
         data.txCount = BigInt.fromI32(0);
         data.sharesWei = BigInt.fromI32(0);
         data.shares = BigDecimal.fromString("0");
         data.tslWei = BigInt.fromI64(0);
         data.tsl = BigDecimal.fromString('0');
+        data.value = BigDecimal.fromString('0');
+        data.valueWei = BigInt.fromI32(0);
         data.aUsdVolumeWei = BigInt.fromI32(0);
         data.aUsdVolume = BigDecimal.fromString("0");
         data.orders = new Array<string>();
@@ -198,6 +203,8 @@ export default class StatisticsLogic {
         data.shares = BigDecimal.fromString("0");
         data.tslWei = BigInt.fromI64(0);
         data.tsl = BigDecimal.fromString('0');
+        data.value = BigDecimal.fromString('0');
+        data.valueWei = BigInt.fromI32(0);
         data.aUsdVolumeWei = BigInt.fromI32(0);
         data.aUsdVolume = BigDecimal.fromString("0");
         data.orders = new Array<string>();
@@ -210,12 +217,15 @@ export default class StatisticsLogic {
         if (data) return data;
 
         data = new DailySymbolData(id);
+        data.symbol = id;
         data.date = BigInt.fromString(data.id);
         data.txCount = BigInt.fromI32(0);
         data.sharesWei = BigInt.fromI32(0);
         data.shares = BigDecimal.fromString("0");
         data.tslWei = BigInt.fromI64(0);
         data.tsl = BigDecimal.fromString('0');
+        data.value = BigDecimal.fromString('0');
+        data.valueWei = BigInt.fromI32(0);
         data.aUsdVolumeWei = BigInt.fromI32(0);
         data.aUsdVolume = BigDecimal.fromString("0");
         data.orders = new Array<string>();
