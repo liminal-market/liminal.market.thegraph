@@ -39,7 +39,7 @@ export default class LiminalMarketLogic {
 
         liminalMarketInfo.lastOrderAt = filledAt;
         liminalMarketInfo.txCount = liminalMarketInfo.txCount.plus(BigInt.fromI32(1));
-
+        liminalMarketInfo.orderExecutedCount = liminalMarketInfo.orderExecutedCount.plus(BigInt.fromI32(1));
         let symbols = liminalMarketInfo.symbols!;
         for (let i = 0; i < symbols.length; i++) {
             let symbol = symbolLogic.get(symbols[i]);

@@ -1,10 +1,17 @@
 import {assert, beforeEach, describe, test} from "matchstick-as/assembly/index";
-import {getBigIntWei, getOrderExecutedEvent, initLiminalMarketInfo, WalletAddress} from "../Util";
+import {
+    getBigIntWei,
+    getOrderExecutedEvent,
+    getServiceContractCreatedEvent,
+    initLiminalMarketInfo,
+    WalletAddress
+} from "../Util";
 import {BigInt, log} from "@graphprotocol/graph-ts";
 import DateHelper from "../../src/DateHelper";
 import NumberHelper from "../../src/NumberHelper";
 import SymbolLogic from "../../src/logic/SymbolLogic";
 import {handleOrderExecuted} from "../liminalMarket";
+import ServiceContractLogic from "../../src/logic/ServiceContractLogic";
 
 describe('test StatisticsLogic', () => {
 
@@ -20,14 +27,17 @@ describe('test StatisticsLogic', () => {
         let filledAvgPrice = getBigIntWei(2);
         let side = 'buy';
         let filledAt = BigInt.fromI64(1666896054000); //Thursday, 27. October 2022 18:40:54
-        let commission = getBigIntWei(2);
+        let serviceFee = getBigIntWei(2);
         let aUsdBalance = getBigIntWei(1000);
-
+        let spender = WalletAddress;
         let symbolLogic = new SymbolLogic();
         symbolLogic.create(symbol, WalletAddress, BigInt.fromI32(1));
 
+        let serviceContractEvent = getServiceContractCreatedEvent(spender);
+        let serviceContractLogic = new ServiceContractLogic();
+        serviceContractLogic.create(serviceContractEvent);
 
-        let fakeOrder = getOrderExecutedEvent(WalletAddress, symbol, tsl, filledQty, filledAvgPrice, side, filledAt, commission, aUsdBalance)
+        let fakeOrder = getOrderExecutedEvent(WalletAddress, symbol, tsl, filledQty, filledAvgPrice, side, filledAt, serviceFee, aUsdBalance, spender)
 
         let expectedHourId = '1666893600000';
         let expectedDayId = '1666828800000'
@@ -49,7 +59,7 @@ describe('test StatisticsLogic', () => {
         assert.fieldEquals('HourlyData', hourId.toString(), 'tsl', NumberHelper.getDecimal(tsl).toString());
         assert.fieldEquals('HourlyData', hourId.toString(), 'aUsdVolumeWei', aUsdVolumeWei.toString());
         assert.fieldEquals('HourlyData', hourId.toString(), 'aUsdVolume', NumberHelper.getDecimal(aUsdVolumeWei).toString());
-        assert.fieldEquals('HourlyData', hourId.toString(), 'orders', '[' + fakeOrder.transaction.hash.toHex() + ']');
+        assert.fieldEquals('HourlyData', hourId.toString(), 'orders', '[' + fakeOrder.params.orderId + ']');
 
         log.info('Validate HourlySymbolData', [])
         assert.fieldEquals('HourlySymbolData', hourId.toString(), 'date', hourId.toString());
@@ -61,7 +71,7 @@ describe('test StatisticsLogic', () => {
         assert.fieldEquals('HourlySymbolData', hourId.toString(), 'tsl', NumberHelper.getDecimal(tsl).toString());
         assert.fieldEquals('HourlySymbolData', hourId.toString(), 'aUsdVolumeWei', aUsdVolumeWei.toString());
         assert.fieldEquals('HourlySymbolData', hourId.toString(), 'aUsdVolume', NumberHelper.getDecimal(aUsdVolumeWei).toString());
-        assert.fieldEquals('HourlySymbolData', hourId.toString(), 'orders', '[' + fakeOrder.transaction.hash.toHex() + ']');
+        assert.fieldEquals('HourlySymbolData', hourId.toString(), 'orders', '[' + fakeOrder.params.orderId + ']');
 
         log.info('Validate DailyData', [])
         assert.stringEquals(expectedDayId, dayId.toString());
@@ -75,7 +85,7 @@ describe('test StatisticsLogic', () => {
         assert.fieldEquals('DailyData', dayId.toString(), 'tsl', NumberHelper.getDecimal(tsl).toString());
         assert.fieldEquals('DailyData', dayId.toString(), 'aUsdVolumeWei', aUsdVolumeWei.toString());
         assert.fieldEquals('DailyData', dayId.toString(), 'aUsdVolume', NumberHelper.getDecimal(aUsdVolumeWei).toString());
-        assert.fieldEquals('DailyData', dayId.toString(), 'orders', '[' + fakeOrder.transaction.hash.toHex() + ']');
+        assert.fieldEquals('DailyData', dayId.toString(), 'orders', '[' + fakeOrder.params.orderId + ']');
 
         log.info('Validate DailySymbolData', [])
         assert.fieldEquals('DailySymbolData', dayId.toString(), 'date', dayId.toString());
@@ -87,7 +97,7 @@ describe('test StatisticsLogic', () => {
         assert.fieldEquals('DailySymbolData', dayId.toString(), 'tsl', NumberHelper.getDecimal(tsl).toString());
         assert.fieldEquals('DailySymbolData', dayId.toString(), 'aUsdVolumeWei', aUsdVolumeWei.toString());
         assert.fieldEquals('DailySymbolData', dayId.toString(), 'aUsdVolume', NumberHelper.getDecimal(aUsdVolumeWei).toString());
-        assert.fieldEquals('DailySymbolData', dayId.toString(), 'orders', '[' + fakeOrder.transaction.hash.toHex() + ']');
+        assert.fieldEquals('DailySymbolData', dayId.toString(), 'orders', '[' + fakeOrder.params.orderId + ']');
 
 
     })

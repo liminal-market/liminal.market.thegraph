@@ -1,193 +1,217 @@
 type LiminalMarketInfo @entity {
-  id: ID!
-  txCount : BigInt!
-  orderExecutedCount : BigInt!
-  orderFailedCount : BigInt!
-  spenderCount: Int!
-  walletCount: Int!
-  symbolCount: Int!
-  balanceWei : BigInt!
-  balance : BigDecimal!
-  valueWei : BigInt!
-  value : BigDecimal!
-  tslWei : BigInt!
-  tsl : BigDecimal!
-  lastOrderAt: BigInt!
-  symbols:[Symbol!]
+    id: ID!
+    txCount : BigInt!
+    orderExecutedCount : BigInt!
+    orderFailedCount : BigInt!
+    spenderCount: Int!
+    walletCount: Int!
+    symbolCount: Int!
+    balanceWei : BigInt!
+    balance : BigDecimal!
+    valueWei : BigInt!
+    value : BigDecimal!
+    tslWei : BigInt!
+    tsl : BigDecimal!
+    lastOrderAt: BigInt!
+    symbols:[Symbol!]
 }
 
-type Spender @entity {
-  id: ID!
-  txCount : BigInt!
-  orderExecutedCount : BigInt!
-  orderFailedCount : BigInt!
+type ServiceContract @entity {
+    id: ID!
+    txCount : BigInt!
+    orderExecutedCount : BigInt!
+    orderFailedCount : BigInt!
+    owner : String!
+    contractAddress : String!
+    serviceFeeAddress : String!
+    serviceFeePoints : BigInt!
+    name : String!
+    url : String!
+    totalServiceFeeWei : BigInt!
+    totalServiceFee : BigDecimal!
+}
+
+type ServiceContractByDay @entity {
+    id : ID!
+    serviceContract : String!
+    date : BigInt!
+    dateISO : String!
+    serviceFeeWei : BigInt!
+    serviceFee : BigDecimal!
+    orders: [Order!]
 }
 
 type Order @entity {
-  id: ID!
-  dailyId : BigInt!
-  hourlyId : BigInt!
-  symbol: Symbol!
-  side: String!
-  tslWei: BigInt!
-  tsl: BigDecimal!
-  filledQtyWei: BigInt!
-  filledQty: BigDecimal!
-  filledAvgPriceWei: BigInt!
-  filledAvgPrice: BigDecimal!
-  filledAt: BigInt!
-  costWei : BigInt!
-  cost : BigDecimal!
-  commissionWei: BigInt!
-  commission: BigDecimal!
-  aUsdBalanceWei: BigInt!
-  aUsdBalance: BigDecimal!
-  tradeId : String!
-  wallet: Wallet!
-  spender : Spender!
+    id: ID!
+    dailyId : BigInt!
+    hourlyId : BigInt!
+    symbol: Symbol!
+    side: String!
+    tslWei: BigInt!
+    tsl: BigDecimal!
+    filledQtyWei: BigInt!
+    filledQty: BigDecimal!
+    filledAvgPriceWei: BigInt!
+    filledAvgPrice: BigDecimal!
+    filledAt: BigInt!
+    costWei : BigInt!
+    cost : BigDecimal!
+    serviceFeeWei: BigInt!
+    serviceFee: BigDecimal!
+    aUsdBalanceWei: BigInt!
+    aUsdBalance: BigDecimal!
+    wallet: Wallet!
+    serviceContract : ServiceContract!
+    transactionHash : String!
 }
 
 type OrderFail @entity {
-  id: ID!
-  dailyId : BigInt!
-  hourlyId : BigInt!
-  wallet : Wallet!
-  symbol: Symbol!
-  message: String!
-  buyingPowerWei: BigInt!
-  buyingPower: BigDecimal!
-  spender : Wallet!
-  created : BigInt!
-}
-
-type OrderTrade @entity {
-  id: ID!
-  count : Int!
-  lastFilledAt: BigInt!
-  orders: [Order!]
+    id: ID!
+    dailyId : BigInt!
+    hourlyId : BigInt!
+    wallet : Wallet!
+    symbol: Symbol!
+    message: String!
+    buyingPowerWei: BigInt!
+    buyingPower: BigDecimal!
+    serviceContract : ServiceContract!
+    created : BigInt!
 }
 
 type Wallet @entity {
-  id: ID!
-  balanceWei: BigInt!
-  balance: BigDecimal!
-  orders: [Order!]
-  orderFails: [OrderFail!]
-  positions: [Position!]
-  lastOrderAt: BigInt!
-  updated: BigInt!
-  txCount : BigInt!
-  history : [WalletHistory!]
+    id: ID!
+    balanceWei: BigInt!
+    balance: BigDecimal!
+    orders: [Order!]
+    orderFails: [OrderFail!]
+    positions: [Position!]
+    lastOrderAt: BigInt!
+    updated: BigInt!
+    txCount : BigInt!
+    history : [WalletHistory!]
 }
 
 type WalletHistory @entity {
-  id: ID!
-  dailyId : BigInt!
-  hourlyId : BigInt!
-  wallet : Wallet!
-  balanceWei : BigInt!
-  balance : BigDecimal!
-  diffWei : BigInt!
-  diff : BigDecimal!
-  action: BigInt!
-  actionName : String!
-  created : BigInt!
-  createdISO : String!
+    id: ID!
+    dailyId : BigInt!
+    hourlyId : BigInt!
+    wallet : Wallet!
+    balanceWei : BigInt!
+    balance : BigDecimal!
+    diffWei : BigInt!
+    diff : BigDecimal!
+    action: BigInt!
+    actionName : String!
+    created : BigInt!
+    createdISO : String!
 }
 
 type Position @entity {
-  id: ID!
-  symbol: Symbol!
-  tslWei: BigInt!
-  tsl: BigDecimal!
-  txCount : BigInt!
-  updated : BigInt!
-  wallet: Wallet!
+    id: ID!
+    symbol: Symbol!
+    tslWei: BigInt!
+    tsl: BigDecimal!
+    txCount : BigInt!
+    updated : BigInt!
+    wallet: Wallet!
 }
 
 type Symbol @entity {
-  id: ID!
-  logo: String!
-  contract: String!
-  pricePerShareWei: BigInt!
-  pricePerShare: BigDecimal!
-  priceLastUpdated: BigInt!
-  tslWei: BigInt!
-  tsl: BigDecimal!
-  valueWei : BigInt!
-  value : BigDecimal!
-  txCount : BigInt!
-  created : BigInt!
-  wallets: [Wallet!]
+    id: ID!
+    logo: String!
+    contract: String!
+    pricePerShareWei: BigInt!
+    pricePerShare: BigDecimal!
+    priceLastUpdated: BigInt!
+    tslWei: BigInt!
+    tsl: BigDecimal!
+    valueWei : BigInt!
+    value : BigDecimal!
+    txCount : BigInt!
+    created : BigInt!
+    wallets: [Wallet!]
 }
 
 
 type HourlyData @entity {
-  id: ID!
-  date: BigInt!
-  symbolCount: Int!
-  walletCount: Int!
-  txCount: BigInt!
-  sharesWei : BigInt!
-  shares : BigDecimal!
-  tslWei : BigInt!
-  tsl : BigDecimal!
-  aUsdVolumeWei : BigInt!
-  aUsdVolume: BigDecimal!
-  valueWei : BigInt!
-  value : BigDecimal!
-  orders: [Order!]
-  orderFails: [OrderFail!]
+    id: ID!
+    date: BigInt!
+    symbolCount: Int!
+    walletCount: Int!
+    txCount: BigInt!
+    sharesWei : BigInt!
+    shares : BigDecimal!
+    tslWei : BigInt!
+    tsl : BigDecimal!
+    aUsdVolumeWei : BigInt!
+    aUsdVolume: BigDecimal!
+    valueWei : BigInt!
+    value : BigDecimal!
+    orders: [Order!]
+    orderFails: [OrderFail!]
 }
 
 type DailyData @entity {
-  id: ID!
-  date: BigInt!
-  symbolCount: Int!
-  walletCount: Int!
-  txCount: BigInt!
-  sharesWei : BigInt!
-  shares : BigDecimal!
-  tslWei : BigInt!
-  tsl : BigDecimal!
-  aUsdVolumeWei : BigInt!
-  aUsdVolume: BigDecimal!
-  valueWei : BigInt!
-  value : BigDecimal!
-  orders: [Order!]
-  orderFails: [OrderFail!]
+    id: ID!
+    date: BigInt!
+    symbolCount: Int!
+    walletCount: Int!
+    txCount: BigInt!
+    sharesWei : BigInt!
+    shares : BigDecimal!
+    tslWei : BigInt!
+    tsl : BigDecimal!
+    aUsdVolumeWei : BigInt!
+    aUsdVolume: BigDecimal!
+    valueWei : BigInt!
+    value : BigDecimal!
+    orders: [Order!]
+    orderFails: [OrderFail!]
 }
 
 type HourlySymbolData @entity {
-  id: ID!
-  date: BigInt!
-  symbol: Symbol!
-  txCount: BigInt!
-  sharesWei : BigInt!
-  shares : BigDecimal!
-  tslWei : BigInt!
-  tsl : BigDecimal!
-  aUsdVolumeWei : BigInt!
-  aUsdVolume: BigDecimal!
-  valueWei : BigInt!
-  value : BigDecimal!
-  orders: [Order!]
-  orderFails: [OrderFail!]
+    id: ID!
+    date: BigInt!
+    symbol: Symbol!
+    txCount: BigInt!
+    sharesWei : BigInt!
+    shares : BigDecimal!
+    tslWei : BigInt!
+    tsl : BigDecimal!
+    aUsdVolumeWei : BigInt!
+    aUsdVolume: BigDecimal!
+    valueWei : BigInt!
+    value : BigDecimal!
+    orders: [Order!]
+    orderFails: [OrderFail!]
 }
 
 type DailySymbolData @entity {
-  id: ID!
-  date: BigInt!
-  symbol: Symbol!
-  txCount: BigInt!
-  sharesWei : BigInt!
-  shares : BigDecimal!
-  tslWei : BigInt!
-  tsl : BigDecimal!
-  aUsdVolumeWei : BigInt!
-  aUsdVolume: BigDecimal!
-  valueWei : BigInt!
-  value : BigDecimal!
-  orders: [Order!]
-  orderFails: [OrderFail!]
+    id: ID!
+    date: BigInt!
+    symbol: Symbol!
+    txCount: BigInt!
+    sharesWei : BigInt!
+    shares : BigDecimal!
+    tslWei : BigInt!
+    tsl : BigDecimal!
+    aUsdVolumeWei : BigInt!
+    aUsdVolume: BigDecimal!
+    valueWei : BigInt!
+    value : BigDecimal!
+    orders: [Order!]
+    orderFails: [OrderFail!]
+}
+
+type Role @entity {
+    id: ID!
+    role : String!
+    account : String!
+    sender : String!
+}
+
+type Account @entity {
+    id : ID!
+    accountId : String!
+    walletAddress : String!
 }

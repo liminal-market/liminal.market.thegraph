@@ -1,10 +1,17 @@
-import {OrderExecuted, OrderFailed, TokenCreated} from "../generated/LiminalMarket/LiminalMarket"
+import {OrderExecuted, OrderFailed, RoleGranted, TokenCreated } from "../generated/LiminalMarket/LiminalMarket"
 import SymbolLogic from "./logic/SymbolLogic";
 import OrderFailLogic from "./logic/OrderFailLogic";
 import OrderAddLogic from './logic/OrderAddLogic'
 import StatisticsLogic from "./logic/StatisticsLogic";
-import {log} from "matchstick-as/assembly/index";
+import {Account, Role} from "../generated/schema";
 
+export function handleGrantRole(event: RoleGranted): void {
+    let role = new Role(event.transaction.hash.toHex());
+    role.role = event.params.role.toHexString();
+    role.account = event.params.account.toHexString();
+    role.sender = event.params.sender.toHexString();
+    role.save();
+}
 
 
 export function handleOrderExecuted(event: OrderExecuted): void {

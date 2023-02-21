@@ -97,6 +97,12 @@
     "inputs": [
       {
         "indexed": false,
+        "internalType": "string",
+        "name": "orderId",
+        "type": "string"
+      },
+      {
+        "indexed": false,
         "internalType": "address",
         "name": "recipient",
         "type": "address"
@@ -140,7 +146,7 @@
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "commission",
+        "name": "serviceFee",
         "type": "uint256"
       },
       {
@@ -575,6 +581,34 @@
         "type": "address"
       },
       {
+        "internalType": "string",
+        "name": "symbol",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "spender",
+        "type": "address"
+      }
+    ],
+    "name": "buySecurityToken",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "walletAddress",
+        "type": "address"
+      },
+      {
         "internalType": "address",
         "name": "tokenAddress",
         "type": "address"
@@ -612,6 +646,25 @@
       }
     ],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "orderId",
+        "type": "string"
+      }
+    ],
+    "name": "getByOrderId",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -715,11 +768,48 @@
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "a",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "b",
+        "type": "string"
+      }
+    ],
+    "name": "isEqual",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "pure",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "kycContract",
     "outputs": [
       {
         "internalType": "contract KYC",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "lmToken",
+    "outputs": [
+      {
+        "internalType": "contract LM",
         "name": "",
         "type": "address"
       }
@@ -742,6 +832,11 @@
   },
   {
     "inputs": [
+      {
+        "internalType": "string",
+        "name": "orderId",
+        "type": "string"
+      },
       {
         "internalType": "address",
         "name": "recipient",
@@ -775,11 +870,6 @@
       {
         "internalType": "uint256",
         "name": "filledAt",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "commission",
         "type": "uint256"
       },
       {
@@ -829,6 +919,25 @@
     "name": "orderFailed",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "name": "orderIds",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -980,6 +1089,11 @@
       {
         "internalType": "contract MarketCalendar",
         "name": "marketCalendarAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "contract LM",
+        "name": "lmTokenAddress",
         "type": "address"
       }
     ],

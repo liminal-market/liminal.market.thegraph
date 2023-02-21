@@ -1,12 +1,24 @@
 {
   "mumbai": {
     "LiminalMarket": {
-      "address": "0x6e9C29e416dc9F7A6A03ffebaB3f02Ef62a1baE4",
-      "startBlock": 29028516
+      "address": "0x0D8c3D4F4B29EfC3c54172803dA8a7f1CA2E6189",
+      "startBlock": 32211000
     },
     "aUSD": {
-      "address": "0x38F2B1E9F11937dD276D64521535b15280A7F137",
-      "startBlock": 29028516
+      "address": "0xc4d1f8D35DB0f0d3E91a3fc8485792F4Df60C387",
+      "startBlock": 32211000
+    },
+    "KYC": {
+      "address": "0x9e2B28D9F841300bE3B64e505dEcA36c35250609",
+      "startBlock": 32211000
+    },
+    "ServiceContract": {
+      "address": "0x0827C71852ba59661aAd9f1fab25B377B3f39C40",
+      "startBlock": 32211218
+    },
+    "MaticUsd": {
+      "address": "0xd0D5e3DB44DE05E9F294BB0a3bEEaF030DE24Ada",
+      "startBlock": 32211000
     }
   },
   "matic": {

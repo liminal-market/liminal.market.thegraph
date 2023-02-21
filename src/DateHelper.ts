@@ -6,6 +6,11 @@ export default class DateHelper {
         return BigInt.fromI64(timestamp.times(BigInt.fromI32(1000)).toI64());
     }
 
+    public static toIso(timestampInMilliseconds: BigInt) : string {
+        let date = new Date(timestampInMilliseconds.toI64());
+        return date.toISOString();
+    }
+
     public static getDayId(timestampInMilliseconds: BigInt): BigInt {
 
         let date = new Date(timestampInMilliseconds.toI64());

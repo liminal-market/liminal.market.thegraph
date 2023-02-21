@@ -1,10 +1,11 @@
 import {Address, BigInt, Bytes, ethereum, store} from "@graphprotocol/graph-ts";
 import {OrderExecuted, OrderFailed, TokenCreated} from "../generated/LiminalMarket/LiminalMarket";
 import {newMockEvent} from "matchstick-as";
-import {LiminalMarketInfo, Order, Spender} from "../generated/schema";
+import {LiminalMarketInfo, Order, ServiceContract } from "../generated/schema";
 import LiminalMarketLogic from "../src/logic/LiminalMarketLogic";
 import {BalanceSet} from "../generated/aUSD/aUSD";
 import NumberHelper from "../src/NumberHelper";
+import {ServiceContractCreated} from "../generated/ServiceContract/ServiceContract";
 
 export let WalletAddress = Address.fromString('0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266');
 export let WalletAddress2 = Address.fromString('0x90F79bf6EB2c4f870365E785982E1f101E93b906');
@@ -40,8 +41,8 @@ export function getLiminalMarketInfo(): LiminalMarketInfo {
     return store.get('LiminalMarketInfo', '1') as LiminalMarketInfo;
 }
 
-export function getSpender(address: Address): Spender {
-    return store.get('Spender', address.toHex()) as Spender;
+export function getSpender(address: Address): ServiceContract {
+    return store.get('ServiceContract', address.toHex()) as ServiceContract;
 }
 
 export function getStringParam(key: string, value: string): ethereum.EventParam {
@@ -118,7 +119,19 @@ export function getTokenCreatedEvent(symbol: string): TokenCreated {
     tokenCreated.parameters.push(getStringParam('symbol', symbol));
     return tokenCreated;
 }
+export function getServiceContractCreatedEvent(serviceContractId: Address): ServiceContractCreated {
+    // @ts-ignore
+    let serviceContract = changetype<ServiceContractCreated>(newMockEvent());
 
+    serviceContract.parameters = new Array();
+    serviceContract.parameters.push(getAddressParam('owner', WalletAddress));
+    serviceContract.parameters.push(getAddressParam('contractAddress', serviceContractId));
+    serviceContract.parameters.push(getAddressParam('serviceFeeAddress', WalletAddress2));
+    serviceContract.parameters.push(getBigIntParam('serviceFeePoints', BigInt.fromI32(100)));
+    serviceContract.parameters.push(getStringParam('name', "Hello"));
+    serviceContract.parameters.push(getStringParam('url', 'World'));
+    return serviceContract;
+}
 export function getOrderFailedEvent(recipient: Address, symbol: string, message: string, buyingPower: BigInt, spender: Address): OrderFailed {
     // @ts-ignore
     let orderFailed = changetype<OrderFailed>(newMockEvent());
@@ -135,20 +148,20 @@ export function getOrderFailedEvent(recipient: Address, symbol: string, message:
 }
 
 export function getOrderExecutedEvent(walletAddress: Address, symbol: string, tsl: BigInt, filledQty: BigInt,
-                                      filledAvgPrice: BigInt, side: string, filledAt: BigInt, commission: BigInt, aUsdBalance: BigInt,
+                                      filledAvgPrice: BigInt, side: string, filledAt: BigInt, serviceFee: BigInt, aUsdBalance: BigInt,
                                       spender: Address = Address.fromString('0x2BFb0207BC88BA9e2Ac74F19c9e88EdCcdBbC2a9')): OrderExecuted {
     // @ts-ignore
     let orderExecuted = changetype<OrderExecuted>(newMockEvent());
     orderExecuted.parameters = new Array<ethereum.EventParam>();
+    orderExecuted.parameters.push(getStringParam('orderId', '123'));
     orderExecuted.parameters.push(getAddressParam('recipient', walletAddress));
-
     orderExecuted.parameters.push(getStringParam('symbol', symbol));
     orderExecuted.parameters.push(getBigIntParam('tsl', tsl));
     orderExecuted.parameters.push(getBigIntParam('filledQty', filledQty));
     orderExecuted.parameters.push(getBigIntParam('filledAvgPrice', filledAvgPrice));
     orderExecuted.parameters.push(getStringParam('side', side));
     orderExecuted.parameters.push(getBigIntParam('filledAt', filledAt))
-    orderExecuted.parameters.push(getBigIntParam('commission', commission));
+    orderExecuted.parameters.push(getBigIntParam('serviceFee', serviceFee));
     orderExecuted.parameters.push(getBigIntParam('aUsdBalance', aUsdBalance));
     orderExecuted.parameters.push(getAddressParam('spender', spender));
 

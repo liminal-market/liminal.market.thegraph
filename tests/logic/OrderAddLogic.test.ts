@@ -3,16 +3,17 @@ import {test} from "matchstick-as";
 import {
     getBigIntWei,
     getOrderExecutedEvent,
+    getServiceContractCreatedEvent,
     getTokenCreatedEvent,
     initLiminalMarketInfo,
-    WalletAddress
+    WalletAddress, WalletAddress2
 } from "../Util";
-import {handleOrderExecuted, handleTokenCreated} from "../../src/liminalMarket";
-import {Address, BigInt, Bytes, ethereum, store} from "@graphprotocol/graph-ts";
+import {handleOrderExecuted} from "../../src/liminalMarket";
+import {BigInt} from "@graphprotocol/graph-ts";
 import DateHelper from "../../src/DateHelper";
 import NumberHelper from "../../src/NumberHelper";
 import SymbolLogic from "../../src/logic/SymbolLogic";
-import WalletHistoryLogic from "../../src/logic/WalletHistoryLogic";
+import ServiceContractLogic from "../../src/logic/ServiceContractLogic";
 
 describe('Test OrderAddLogic', () => {
 
@@ -30,20 +31,24 @@ describe('Test OrderAddLogic', () => {
         let filledAvgPrice = getBigIntWei(4357);
         let side = 'buy';
         let filledAt = DateHelper.getJsTimestamp(BigInt.fromI32(1000));
-        let commission = getBigIntWei(5);
+        let serviceFee = getBigIntWei(5);
         let aUsdBalance = getBigIntWei(45235)
+        let spender = WalletAddress;
 
         let tokenCreatedEvent = getTokenCreatedEvent(symbolId);
         let tokenLogic = new SymbolLogic();
         tokenLogic.create(tokenCreatedEvent.params.symbol, tokenCreatedEvent.params.tokenAddress, tokenCreatedEvent.block.timestamp);
 
-        let event = getOrderExecutedEvent(walletAddress, symbolId, tsl, filledQty, filledAvgPrice, side, filledAt, commission, aUsdBalance);
-        handleOrderExecuted(event)
+        let serviceContractEvent = getServiceContractCreatedEvent(spender);
+        let serviceContractLogic = new ServiceContractLogic();
+        serviceContractLogic.create(serviceContractEvent);
+
+        let event = getOrderExecutedEvent(walletAddress, symbolId, tsl, filledQty, filledAvgPrice, side, filledAt, serviceFee, aUsdBalance, spender);
+
+        handleOrderExecuted(event);
 
         let costWei = event.params.filledQty.times(event.params.filledAvgPrice).div(BigInt.fromI64(10 ** 18));
-        let tradeId = NumberHelper.getTradeId(event.params.recipient.toHex(), event.params.symbol, event.params.filledAt,
-            event.params.filledQty, event.params.filledAvgPrice, event.params.side);
-        let orderId = event.transaction.hash.toHex();
+        let orderId = event.params.orderId;
 
         assert.fieldEquals('Order', orderId, 'symbol', event.params.symbol);
         assert.fieldEquals('Order', orderId, 'tslWei', event.params.tsl.toString());
@@ -54,19 +59,14 @@ describe('Test OrderAddLogic', () => {
         assert.fieldEquals('Order', orderId, 'filledAvgPrice', NumberHelper.getDecimal(event.params.filledAvgPrice).toString());
         assert.fieldEquals('Order', orderId, 'filledAt', event.params.filledAt.toString());
         assert.fieldEquals('Order', orderId, 'side', event.params.side);
-        assert.fieldEquals('Order', orderId, 'commissionWei', event.params.commission.toString());
-        assert.fieldEquals('Order', orderId, 'commission', NumberHelper.getDecimal(event.params.commission).toString());
+        assert.fieldEquals('Order', orderId, 'serviceFeeWei', event.params.serviceFee.toString());
+        assert.fieldEquals('Order', orderId, 'serviceFee', NumberHelper.getDecimal(event.params.serviceFee).toString());
         assert.fieldEquals('Order', orderId, 'aUsdBalanceWei', event.params.aUsdBalance.toString());
         assert.fieldEquals('Order', orderId, 'aUsdBalance', NumberHelper.getDecimal(event.params.aUsdBalance).toString());
         assert.fieldEquals('Order', orderId, 'wallet', event.params.recipient.toHex());
         assert.fieldEquals('Order', orderId, 'costWei', costWei.toString());
         assert.fieldEquals('Order', orderId, 'cost', NumberHelper.getDecimal(costWei).toString());
-        assert.fieldEquals('Order', orderId, 'spender', event.params.spender.toHex())
-        assert.fieldEquals('Order', orderId, 'tradeId', tradeId);
-
-        assert.fieldEquals('OrderTrade', tradeId, 'count', '1');
-        assert.fieldEquals('OrderTrade', tradeId, 'lastFilledAt', event.params.filledAt.toString());
-        assert.fieldEquals('OrderTrade', tradeId, 'orders', '[' + event.transaction.hash.toHex() + ']');
+        assert.fieldEquals('Order', orderId, 'serviceContract', event.params.spender.toHex())
 
         let positionId = (event.params.recipient.toHex() + '_' + event.params.symbol);
         assert.fieldEquals('Position', positionId, 'wallet', event.params.recipient.toHex());
@@ -90,6 +90,20 @@ describe('Test OrderAddLogic', () => {
         assert.fieldEquals('LiminalMarketInfo', '1', 'txCount', '1');
         assert.fieldEquals('LiminalMarketInfo', '1', 'valueWei', NumberHelper.times(event.params.tsl, event.params.filledAvgPrice).toString());
         assert.fieldEquals('LiminalMarketInfo', '1', 'value', NumberHelper.getDecimal(NumberHelper.times(event.params.tsl, event.params.filledAvgPrice)).toString());
+
+
+        let serviceContractId = event.params.spender.toHexString()
+        assert.fieldEquals('ServiceContract', serviceContractId, 'orderExecutedCount', '1');
+        assert.fieldEquals('ServiceContract', serviceContractId, 'txCount', '1');
+        assert.fieldEquals('ServiceContract', serviceContractId, 'totalServiceFeeWei', '1666666666666666666');
+        assert.fieldEquals('ServiceContract', serviceContractId, 'totalServiceFee', '1.666666666666666666');
+
+        assert.fieldEquals('ServiceContract', serviceContractId, 'name', 'Hello');
+        assert.fieldEquals('ServiceContract', serviceContractId, 'url', 'World');
+        assert.fieldEquals('ServiceContract', serviceContractId, 'owner', WalletAddress.toHexString());
+        assert.fieldEquals('ServiceContract', serviceContractId, 'serviceFeeAddress', WalletAddress2.toHexString());
+        assert.fieldEquals('ServiceContract', serviceContractId, 'contractAddress', serviceContractId);
+
 
     })
 

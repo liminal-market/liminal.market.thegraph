@@ -4,7 +4,7 @@ import WalletLogic from "./WalletLogic";
 import LiminalMarketLogic from "./LiminalMarketLogic";
 import {BigInt} from "@graphprotocol/graph-ts";
 import NumberHelper from "../NumberHelper";
-import SpenderLogic from "./SpenderLogic";
+import ServiceContractLogic from "./ServiceContractLogic";
 import DateHelper from "../DateHelper";
 
 export default class OrderFailLogic {
@@ -16,9 +16,8 @@ export default class OrderFailLogic {
         let walletLogic = new WalletLogic();
         let wallet = walletLogic.getWallet(event.params.recipient, liminalMarketInfo);
 
-        let spenderLogic = new SpenderLogic();
-        let spender = spenderLogic.getSpender(event.params.spender, liminalMarketInfo);
-        spenderLogic.addFail(spender);
+        let serviceContractLogic = new ServiceContractLogic();
+        serviceContractLogic.addFail(event);
 
         let createdInMilliseconds = DateHelper.getJsTimestamp(event.block.timestamp);
         let orderFail = new OrderFail(event.transaction.hash.toHex());
@@ -29,7 +28,7 @@ export default class OrderFailLogic {
         orderFail.buyingPowerWei = event.params.buyingPower;
         orderFail.buyingPower = NumberHelper.getDecimal(orderFail.buyingPowerWei);
         orderFail.wallet = wallet.id;
-        orderFail.spender = spender.id;
+        orderFail.serviceContract = event.params.spender.toHexString();
         orderFail.created = createdInMilliseconds;
         orderFail.save();
 
