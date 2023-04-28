@@ -1,6 +1,14 @@
 {
-  "name": "order-executed",
-  "license": "UNLICENSED",
+  "name": "liminal.market.thegraph",
+  "description": "The code in this library create a subgraph using TheGraph protocol. It listens to contract event and uses TheGraph to index the events, allowing for easy query using TheGraph. The subgraph can be queried at https://thegraph.com/hosted-service/subgraph/liminal-market/",
+  "repository": {
+    "url": "https://github.com/liminal-market/liminal.market.thegraph"
+  },
+  "bugs": {
+    "url": "https://github.com/liminal-market/liminal.market.thegraph/issues"
+  },
+  "homepage": "https://liminal.market",
+  "license": "MIT",
   "scripts": {
     "codegen": "graph codegen",
     "build": "graph build",
